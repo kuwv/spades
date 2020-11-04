@@ -1,0 +1,28 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = ">5.2"
+flake8 = "*"
+pydocstyle = "*"
+docstr-coverage = "*"
+pytest-cov = "*"
+isort = "*"
+bandit = "*"
+safety = "*"
+mkdocs = "*"
+bump2version = "*"
+invoke = "*"
+mkdocs-material = "*"
+mkdocstrings = "*"
+flit = "*"
+ansible = "*"
+docker-compose = "*"
+
+[packages]
+fastapi = "*"
+
+[requires]
+python_version = "3.8"
