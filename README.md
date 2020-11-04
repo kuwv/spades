@@ -10,4 +10,8 @@ SWE-681 Final Project - Spades
 
 ## Install
 
-`pip install spades`
+```
+pip install pipenv
+pipenv shell
+pipenv install --dev
+```

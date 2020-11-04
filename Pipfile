@@ -22,7 +22,8 @@ ansible = "*"
 docker-compose = "*"
 
 [packages]
-fastapi = "*"
+flask = "*"
+flask-jwt = "*"
 
 [requires]
 python_version = "3.8"
