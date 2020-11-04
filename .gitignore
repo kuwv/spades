@@ -90,3 +90,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# gunicorn
+.pid

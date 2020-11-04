@@ -24,6 +24,7 @@ docker-compose = "*"
 [packages]
 flask = "*"
 flask-jwt = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"

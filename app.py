@@ -8,9 +8,9 @@ from werkzeug.security import safe_str_cmp
 class User(object):
     '''Provide abstract user.'''
 
-    def __init__(self, id, username, password):
+    def __init__(self, ident, username, password):
         '''Initialize user object.'''
-        self.id = id
+        self.id = ident
         self.username = username
         self.password = password
 

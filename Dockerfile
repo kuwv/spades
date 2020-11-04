@@ -28,7 +28,8 @@ RUN yum update -y ;\
     gcc \
     python38-devel \
     python38-setuptools ;\
-  pip install --no-cache-dir -r requirements.txt
+  pip install --no-cache-dir -r requirements.txt ;\
+  yum remove gcc -y
 
 # USER webapp
-CMD ["daphne", "-b", "0.0.0.0", "-p", "3000", "app:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0", "-p", "8000", "app:app"]

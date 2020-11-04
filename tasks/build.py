@@ -5,7 +5,7 @@
 
 from invoke import task
 
-from spades.__version__ import __version__
+from __version__ import __version__
 
 if 'dev' in __version__ or 'rc' in __version__:
     part = 'build'
