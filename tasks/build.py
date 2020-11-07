@@ -5,7 +5,7 @@
 
 from invoke import task
 
-from __version__ import __version__
+from webapp.__version__ import __version__
 
 if 'dev' in __version__ or 'rc' in __version__:
     part = 'build'
@@ -20,9 +20,9 @@ def build(ctx, path='.'):  # type: ignore
 
 
 @task
-def version(  # type: ignore
+def version(
     ctx, part=part, tag=False, commit=False, message=None
-):
+):  # type: ignore
     '''Update project version and apply tags.'''
     args = [part]
     if tag:
@@ -47,7 +47,8 @@ def clean(ctx):  # type: ignore
         '**/*.pyc',
         '**/logs',
         '**/dist',
-        '**/node_modules'
+        '**/node_modules',
+        '**/site',
     ]
     for path in paths:
         ctx.run("rm -rf {}".format(path))

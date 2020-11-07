@@ -12,20 +12,23 @@ def autoformat(ctx, check=True):  # type: ignore
     args = ['--skip-string-normalization']
     if check:
         args.append('--check')
-    ctx.run('isort --atomic **/*.py')
-    ctx.run("black **/*.py {}".format(' '.join(args)))
+    with ctx.cd('webapp'):
+        ctx.run('isort --atomic **/*.py')
+        ctx.run("black **/*.py {}".format(' '.join(args)))
 
 
 @task
 def lint(ctx):  # type: ignore
     '''Check project source code for linting errors.'''
-    ctx.run('flake8')
+    with ctx.cd('webapp'):
+        ctx.run('flake8')
 
 
 @task
 def type_check(ctx, path='.'):  # type: ignore
     '''Check project source types.'''
-    ctx.run("mypy {}".format(path))
+    with ctx.cd('webapp'):
+        ctx.run("mypy {}".format(path))
 
 
 @task
@@ -34,14 +37,16 @@ def unit_test(ctx, capture=None):  # type: ignore
     args = []
     if capture:
         args.append('--capture=' + capture)
-    ctx.run("pytest {}".format(' '.join(args)))
+    with ctx.cd('webapp'):
+        ctx.run("pytest {}".format(' '.join(args)))
 
 
 @task
 def static_analysis(ctx):  # type: ignore
     '''Perform static code analysis on imports.'''
-    ctx.run('safety check')
-    ctx.run('bandit -r spades')
+    with ctx.cd('webapp'):
+        ctx.run('safety check')
+        ctx.run('bandit -r spades')
 
 
 @task
@@ -50,7 +55,8 @@ def coverage(ctx, report=None):  # type: ignore
     args = ['--cov=spades']
     if report:
         args.append('--cov-report={}'.format(report))
-    ctx.run("pytest {} ./tests/".format(' '.join(args)))
+    with ctx.cd('webapp'):
+        ctx.run("pytest {} ./tests/".format(' '.join(args)))
 
 
 @task(pre=[autoformat, lint, unit_test, static_analysis, coverage])

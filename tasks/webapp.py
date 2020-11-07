@@ -5,18 +5,14 @@
 
 import os
 import textwrap
+
 from invoke import task
 
-from .builds.static import build
+from .static import build
 
 
 @task(pre=[build])
-def start(
-    ctx,
-    hostname='localhost',
-    port=9000,
-    workers=4
-):  # type: ignore
+def start(ctx, hostname='localhost', port=9000, workers=4):  # type: ignore
     '''Start webapp.'''
     ctx.run(
         textwrap.dedent(f"""\
@@ -25,7 +21,7 @@ def start(
             --workers={workers} \
             --reload
         """),
-        disown=True
+        disown=True,
     )
 
 
