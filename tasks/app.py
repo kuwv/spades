@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 # copyright: (c) 2020 by Jesse Johnson.
 # license: Apache 2.0, see LICENSE for more details.
-'''Test Task-Runner.'''
+'''Provide App Task-Runner.'''
 
 import os
 import textwrap
 from invoke import task
 
+from .builds.static import build
 
-@task
+
+@task(pre=[build])
 def start(
     ctx,
     hostname='localhost',
@@ -19,7 +21,7 @@ def start(
     ctx.run(
         textwrap.dedent(f"""\
             gunicorn app:app \
-            --pid {os.getcwd()}/.pid \
+            --pid={os.getcwd()}/.pid \
             --workers={workers} \
             --reload
         """),

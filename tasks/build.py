@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # copyright: (c) 2020 by Jesse Johnson.
 # license: Apache 2.0, see LICENSE for more details.
-'''Test Task-Runner.'''
+'''Build Task-Runner.'''
 
 from invoke import task
 
@@ -14,23 +14,9 @@ else:
 
 
 @task
-def build(ctx, format=None):  # type: ignore
-    '''Build wheel package.'''
-    if format:
-        ctx.run("flit build --format={}".format(format))
-    else:
-        ctx.run('flit build')
-
-
-@task
-def install(ctx, symlink=True, dev=False):  # type: ignore
-    '''Install within environment.'''
-    args = []
-    if symlink:
-        args.append('--symlink')
-    if dev:
-        args.append('--python=python3')
-    ctx.run("flit install {}".format(' '.join(args)))
+def build(ctx, path='.'):  # type: ignore
+    '''Build docker image.'''
+    ctx.run(f"docker build {path}")
 
 
 @task
@@ -54,17 +40,14 @@ def version(  # type: ignore
 
 
 @task
-def publish(ctx):  # type: ignore
-    '''Publish project distribution.'''
-    ctx.run('flit publish')
-
-
-@task
 def clean(ctx):  # type: ignore
     '''Clean project dependencies and build.'''
-    paths = ['dist', 'logs']
-    paths.append('**/__pycache__')
-    paths.append('**/*.pyc')
-    paths.append('spades.egg-info')
+    paths = [
+        '**/__pycache__',
+        '**/*.pyc',
+        '**/logs',
+        '**/dist',
+        '**/node_modules'
+    ]
     for path in paths:
         ctx.run("rm -rf {}".format(path))

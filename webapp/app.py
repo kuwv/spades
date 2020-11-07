@@ -44,7 +44,12 @@ def identity(payload):
     return userid_table.get(user_id, None)
 
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_url_path='',
+    static_folder='static/dist',
+    # template_folder='templates'
+)
 app.debug = True
 app.config['SECRET_KEY'] = 'super-secret'
 
@@ -56,7 +61,3 @@ jwt = JWT(app, authenticate, identity)
 def protected():
     '''Check protected resource.'''
     return '%s' % current_identity
-
-
-if __name__ == '__main__':
-    app.run()

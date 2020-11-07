@@ -1,4 +1,3 @@
-# FROM node:lts-alpine AS build
 FROM centos/nodejs-12-centos7 AS build
 
 WORKDIR /app
@@ -29,7 +28,9 @@ RUN yum update -y ;\
     python38-devel \
     python38-setuptools ;\
   pip install --no-cache-dir -r requirements.txt ;\
-  yum remove gcc -y
+  yum remove gcc -y ;\
+  yum clean all && \
+  rm -rf /var/cache/yum
 
 # USER webapp
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0", "-p", "8000", "app:app"]

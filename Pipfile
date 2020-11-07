@@ -20,11 +20,14 @@ mkdocstrings = "*"
 flit = "*"
 ansible = "*"
 docker-compose = "*"
+pytest-flask = "*"
 
 [packages]
 flask = "*"
 flask-jwt = "*"
 gunicorn = "*"
+cerberus = "*"
+redis = "*"
 
 [requires]
 python_version = "3.8"
