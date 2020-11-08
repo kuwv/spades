@@ -31,7 +31,10 @@ userid_table = {u.id: u for u in users}
 def authenticate(username, password):
     '''Authenticate user.'''
     user = username_table.get(username, None)
-    if user and safe_str_cmp(user.password.encode('utf-8'), password.encode('utf-8')):
+    if user and safe_str_cmp(
+        user.password.encode('utf-8'),
+        password.encode('utf-8')
+    ):
         return user
 
 

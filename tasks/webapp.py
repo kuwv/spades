@@ -8,21 +8,33 @@ import textwrap
 
 from invoke import task
 
-from .static import build
+from . import config
 
 
-@task(pre=[build])
-def start(ctx, hostname='localhost', port=9000, workers=4):  # type: ignore
+def build(ctx, path='.'):  # type: ignore
+    '''Build docker image.'''
+    ctx.run(f"""\
+        pipenv lock \
+        --requirements > {config.webapp_dir}/requirements.txt
+    """)
+    with ctx.cd(config.webapp_dir):
+        ctx.run(f"docker build {path}")
+
+
+@task
+def start(ctx, hostname='localhost', port=8080, workers=4):  # type: ignore
     '''Start webapp.'''
-    ctx.run(
-        textwrap.dedent(f"""\
-            gunicorn app:app \
-            --pid={os.getcwd()}/.pid \
-            --workers={workers} \
-            --reload
-        """),
-        disown=True,
-    )
+    with ctx.cd(config.webapp_dir):
+        ctx.run(
+            textwrap.dedent(f"""\
+                gunicorn app:app \
+                --pid={os.getcwd()}/.pid \
+                --bind={hostname}:{port} \
+                --workers={workers} \
+                --reload
+            """),
+            disown=True,
+        )
 
 
 @task

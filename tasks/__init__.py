@@ -5,11 +5,11 @@
 
 from invoke import Collection
 
-from . import docsite, static, webapp, build, qa, validate
+from . import docs, webui, webapp, build, qa, validate
 
 ns = Collection().from_module(build)
 ns.add_collection(Collection.from_module(webapp))
-ns.add_collection(Collection.from_module(static))
-ns.add_collection(Collection.from_module(docsite))
+ns.add_collection(Collection.from_module(webui))
+ns.add_collection(Collection.from_module(docs))
 ns.add_collection(Collection.from_module(qa))
 ns.add_collection(Collection.from_module(validate))

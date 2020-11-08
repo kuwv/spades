@@ -6,6 +6,11 @@
 from invoke import task
 
 from webapp.__version__ import __version__
+# from . import config
+from . import webapp
+from . import webui
+from . import docs
+
 
 if 'dev' in __version__ or 'rc' in __version__:
     part = 'build'
@@ -14,9 +19,19 @@ else:
 
 
 @task
-def build(ctx, path='.'):  # type: ignore
-    '''Build docker image.'''
-    ctx.run(f"docker build {path}")
+def start(ctx):
+    '''Start all services.'''
+    webapp.start(ctx)
+    webui.start(ctx)
+    docs.start(ctx)
+
+
+@task
+def stop(ctx):
+    '''Stop all services.'''
+    docs.stop(ctx)
+    # webui.stop(ctx)
+    webapp.stop(ctx)
 
 
 @task

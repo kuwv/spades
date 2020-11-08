@@ -5,6 +5,8 @@
 
 from invoke import task
 
+from . import config
+
 
 @task
 def autoformat(ctx, check=True):  # type: ignore
@@ -12,7 +14,7 @@ def autoformat(ctx, check=True):  # type: ignore
     args = ['--skip-string-normalization']
     if check:
         args.append('--check')
-    with ctx.cd('webapp'):
+    with ctx.cd(config.webapp_dir):
         ctx.run('isort --atomic **/*.py')
         ctx.run("black **/*.py {}".format(' '.join(args)))
 
@@ -20,14 +22,14 @@ def autoformat(ctx, check=True):  # type: ignore
 @task
 def lint(ctx):  # type: ignore
     '''Check project source code for linting errors.'''
-    with ctx.cd('webapp'):
+    with ctx.cd(config.webapp_dir):
         ctx.run('flake8')
 
 
 @task
 def type_check(ctx, path='.'):  # type: ignore
     '''Check project source types.'''
-    with ctx.cd('webapp'):
+    with ctx.cd(config.webapp_dir):
         ctx.run("mypy {}".format(path))
 
 
@@ -37,14 +39,14 @@ def unit_test(ctx, capture=None):  # type: ignore
     args = []
     if capture:
         args.append('--capture=' + capture)
-    with ctx.cd('webapp'):
+    with ctx.cd(config.webapp_dir):
         ctx.run("pytest {}".format(' '.join(args)))
 
 
 @task
 def static_analysis(ctx):  # type: ignore
     '''Perform static code analysis on imports.'''
-    with ctx.cd('webapp'):
+    with ctx.cd(config.webapp_dir):
         ctx.run('safety check')
         ctx.run('bandit -r spades')
 
@@ -55,7 +57,7 @@ def coverage(ctx, report=None):  # type: ignore
     args = ['--cov=spades']
     if report:
         args.append('--cov-report={}'.format(report))
-    with ctx.cd('webapp'):
+    with ctx.cd(config.webapp_dir):
         ctx.run("pytest {} ./tests/".format(' '.join(args)))
 
 

@@ -21,6 +21,7 @@ flit = "*"
 ansible = "*"
 docker-compose = "*"
 pytest-flask = "*"
+autopep8 = "*"
 
 [packages]
 flask = "*"
@@ -28,6 +29,8 @@ flask-jwt = "*"
 gunicorn = "*"
 cerberus = "*"
 redis = "*"
+transitions = "*"
+flask-session = "*"
 
 [requires]
 python_version = "3.8"

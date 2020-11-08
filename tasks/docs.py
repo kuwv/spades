@@ -7,6 +7,8 @@ import textwrap
 
 from invoke import task
 
+from . import config
+
 
 @task
 def lint(ctx):
@@ -23,21 +25,21 @@ def coverage(ctx):
 @task(pre=[lint], post=[coverage])
 def test(ctx):
     '''Test documentation build.'''
-    with ctx.cd('docsite'):
+    with ctx.cd(config.docs_dir):
         ctx.run('mkdocs build')
 
 
 @task
 def build(ctx):
     '''Build documentation site.'''
-    with ctx.cd('docsite'):
+    with ctx.cd(config.docs_dir):
         ctx.run('mkdocs build')
 
 
 @task
-def start(ctx, hostname='localhost', port=8081):  # type: ignore
+def start(ctx, hostname='localhost', port=8001):  # type: ignore
     '''Start docsite.'''
-    with ctx.cd('docsite'):
+    with ctx.cd(config.docs_dir):
         ctx.run(
             textwrap.dedent(f"""\
                 mkdocs serve \
