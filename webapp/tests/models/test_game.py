@@ -6,6 +6,7 @@
 from spades.game import Game
 
 
-def test_game():
+def test_game() -> None:
     '''Test game.'''
     game = Game()
+    # print(game.new_game())

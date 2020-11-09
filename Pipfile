@@ -22,15 +22,16 @@ ansible = "*"
 docker-compose = "*"
 pytest-flask = "*"
 autopep8 = "*"
+mypy = "*"
 
 [packages]
 flask = "*"
 flask-jwt = "*"
 gunicorn = "*"
 cerberus = "*"
-redis = "*"
 transitions = "*"
 flask-session = "*"
+redis = "*"
 
 [requires]
 python_version = "3.8"

@@ -3,7 +3,7 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide card package.'''
 
-import random
+from random import randrange, shuffle
 
 from .card import Card
 
@@ -11,22 +11,26 @@ from .card import Card
 class Deck:
     '''Provide deck object.'''
 
-    size = 52
+    max_size = 52
 
-    def __init__(self):
+    def __init__(self) -> None:
+        '''Initialize Deck.'''
         self.deck = [
             Card(rank, suit) for rank in Card.ranks for suit in Card.suits
         ]
         self.shuffle()
 
-    def __iter__(self):
+    def __iter__(self) -> 'Deck':
+        '''Return deck itself as iterator.'''
         return self
 
-    def __next__(self):
+    def __next__(self) -> Card:
+        '''Get next card instance.'''
         if len(self.deck) <= 0:
             raise StopIteration()
-
         return self.deck.pop()
 
-    def shuffle(self, iterations=50):
-        random.shuffle(self.deck)
+    def shuffle(self, cycles: int = 99) -> None:
+        '''Mimic dealer shuffling.'''
+        for _ in range(randrange(cycles)):
+            shuffle(self.deck)

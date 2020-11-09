@@ -3,20 +3,20 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Quality Assurance Task-Runner.'''
 
-from invoke import task
+from invoke import task  # type: ignore
 
 from . import config
 
 
 @task
-def autoformat(ctx, check=True):  # type: ignore
+def autoformat(ctx):  # type: ignore
     '''Format project source code to PEP-8 standard.'''
     args = ['--skip-string-normalization']
     if check:
         args.append('--check')
     with ctx.cd(config.webapp_dir):
         ctx.run('isort --atomic **/*.py')
-        ctx.run("black **/*.py {}".format(' '.join(args)))
+        ctx.run('autopep8 --in-place --recursive .')
 
 
 @task

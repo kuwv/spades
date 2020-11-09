@@ -3,16 +3,17 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide player capabilities.'''
 
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from .book import Book
 from .card import Card
+from .exceptions import EmptyHandSizeException, MaxHandSizeException
 
 
 class Hand:
     '''Provide player hand object.'''
 
-    hand_size = 13
+    max_size = 13
 
     def __init__(self) -> None:
         '''Initialize player hand.'''
@@ -20,7 +21,10 @@ class Hand:
 
     def add_card(self, card: Card) -> None:
         '''Add card to player hand.'''
-        self.__hand.append(card)
+        if len(self.__hand) < Hand.max_size:
+            self.__hand.append(card)
+        else:
+            raise MaxHandSizeException('maximum hand size')
 
     def pull_card(self, rank: str, suit: str) -> Optional[Card]:
         selection = Card(rank, suit)
@@ -36,8 +40,13 @@ class Player:
     def __init__(self, name: str) -> None:
         '''Initialize player.'''
         self.name = name
-        self.__books: Book = []
+        self.__hand: Optional[Hand] = None
+        self.__books: Set[Book] = Set()
         self.__bid: Optional[int] = None
+
+    @property
+    def books(self) -> Set[Book]:
+        return self.__books
 
     @property
     def bid(self) -> Optional[int]:
@@ -56,8 +65,11 @@ class Player:
 
     def play_card(self, rank: str, suit: str) -> Optional[Card]:
         '''Play card from players hand.'''
-        return self.hand.pull_card(rank, suit)
+        if self.__hand:
+            return self.__hand.pull_card(rank, suit)
+        else:
+            raise EmptyHandSizeException('player has no cards to play')
 
-    def add_book(self, book):
+    def add_book(self, book: Book) -> None:
         '''Add book to players pile.'''
-        self.books.append(book)
+        self.__books.add(book)
