@@ -36,6 +36,10 @@ class Card:
             f"{self.__class__.__name__}(rank={self.rank!r}, suit={self.suit!r})"
         )
 
+    def __hash__(self) -> int:
+        '''Check object hash.'''
+        return hash((self.rank, self.suit))
+
     def __eq__(self, other: object) -> bool:
         '''Check if card is equal another card.'''
         if other.__class__ is not self.__class__:

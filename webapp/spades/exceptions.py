@@ -8,6 +8,14 @@ class GameException(Exception):
     '''Provide exception on game errors.'''
 
 
+class IllegalDeckException(GameException):
+    '''Provide exception on deailing deck durn game.'''
+
+
+class IllegalPlayerException(GameException):
+    '''Provide exception on adding players during game.'''
+
+
 class MaxPlayersException(GameException):
     '''Provide exception on maximum players in game.'''
 
