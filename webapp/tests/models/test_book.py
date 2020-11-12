@@ -5,7 +5,7 @@
 
 import pytest
 
-from spades.exceptions import MaxCardBookException
+from spades.exceptions import MaxBookSizeException
 from spades.card import Card
 from spades.book import Book
 
@@ -28,6 +28,6 @@ def test_book_highcard():
 def test_book_max():
     '''Test maximum allowed cards in book.'''
     book = Book(1)
-    with pytest.raises(MaxCardBookException):
+    with pytest.raises(MaxBookSizeException):
         book.add_card(Card('2', 'Hearts'))
         book.add_card(Card('3', 'Hearts'))

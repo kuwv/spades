@@ -8,15 +8,27 @@ class GameException(Exception):
     '''Provide exception on game errors.'''
 
 
+class IllegalTurnException(GameException):
+    '''Provide exception on unavailable command during phase.'''
+
+
 class IllegalDeckException(GameException):
-    '''Provide exception on deailing deck durn game.'''
+    '''Provide exception on dealing deck during current game.'''
 
 
 class IllegalPlayerException(GameException):
     '''Provide exception on adding players during game.'''
 
 
-class MaxPlayersException(GameException):
+class IllegalBidException(GameException):
+    '''Provide exception on bids made out of turn.'''
+
+
+class NoPlayerException(GameException):
+    '''Provide exception on no players in game.'''
+
+
+class MaxPlayerException(GameException):
     '''Provide exception on maximum players in game.'''
 
 
@@ -26,10 +38,6 @@ class MaxHandSizeException(GameException):
 
 class EmptyHandSizeException(GameException):
     '''Provide exception on empty player hand.'''
-
-
-class NoPlayersException(GameException):
-    '''Provide exception on no players in game.'''
 
 
 class InvalidComparisonCardException(GameException):
@@ -44,5 +52,5 @@ class InvalidSuitCardException(GameException):
     '''Provide exception on invalid card suit.'''
 
 
-class MaxCardBookException(GameException):
+class MaxBookSizeException(GameException):
     '''Provide exception on maximum cards in book.'''

@@ -5,10 +5,10 @@
 
 from typing import Optional, Set
 
-from .book import Book
-from .card import Card
-from .exceptions import EmptyHandSizeException
-from .hand import Hand
+from spades.book import Book
+from spades.card import Card
+from spades.exceptions import EmptyHandSizeException
+from spades.hand import Hand
 
 
 class Player:
@@ -16,6 +16,7 @@ class Player:
 
     def __init__(self, name: str) -> None:
         '''Initialize player.'''
+        # self.id = ident
         self.name = name
         self.__hand: Optional[Hand] = None
         self.__books: Set[Book] = set()

@@ -5,8 +5,8 @@
 
 from typing import Optional, Set
 
-from .card import Card
-from .exceptions import MaxHandSizeException
+from spades.card import Card
+from spades.exceptions import MaxHandSizeException
 
 
 class Hand:
@@ -17,6 +17,22 @@ class Hand:
     def __init__(self) -> None:
         '''Initialize player hand.'''
         self.__hand: Set[Card] = set()
+
+    def __repr__(self) -> str:
+        '''Return string representation of card.'''
+        return (
+            f"{self.__class__.__name__}(hand={self.__hand!r})"
+        )
+
+    def __iter__(self) -> 'Hand':
+        '''Return hand itself as iterator.'''
+        return self
+
+    def __next__(self) -> Card:
+        '''Get next card instance.'''
+        if len(self.__hand) <= 0:
+            raise StopIteration()
+        return self.__hand
 
     def add_card(self, card: Card) -> None:
         '''Add card to player hand.'''

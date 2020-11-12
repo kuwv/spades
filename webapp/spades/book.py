@@ -5,8 +5,8 @@
 
 from typing import List, Optional
 
-from .card import Card
-from .exceptions import MaxCardBookException
+from spades.card import Card
+from spades.exceptions import MaxBookSizeException
 
 
 class Book:
@@ -50,4 +50,4 @@ class Book:
                 self.__high_card = card
             self.__cards.append(card)
         else:
-            raise MaxCardBookException('max book size')
+            raise MaxBookSizeException('max book size')

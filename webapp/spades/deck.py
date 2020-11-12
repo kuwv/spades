@@ -5,7 +5,7 @@
 
 from random import randrange, shuffle
 
-from .card import Card
+from spades.card import Card
 
 
 class Deck:
@@ -15,7 +15,7 @@ class Deck:
 
     def __init__(self) -> None:
         '''Initialize Deck.'''
-        self.deck = [
+        self.__deck = [
             Card(rank, suit) for rank in Card.ranks for suit in Card.suits
         ]
         self.shuffle()
@@ -26,11 +26,11 @@ class Deck:
 
     def __next__(self) -> Card:
         '''Get next card instance.'''
-        if len(self.deck) <= 0:
+        if len(self.__deck) <= 0:
             raise StopIteration()
-        return self.deck.pop()
+        return self.__deck.pop()
 
     def shuffle(self, cycles: int = 99) -> None:
         '''Mimic dealer shuffling.'''
         for _ in range(randrange(cycles)):
-            shuffle(self.deck)
+            shuffle(self.__deck)

@@ -3,7 +3,7 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide card package.'''
 
-from .exceptions import (
+from spades.exceptions import (
     InvalidComparisonCardException,
     InvalidRankCardException,
     InvalidSuitCardException
