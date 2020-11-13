@@ -64,16 +64,16 @@ def test_game_states(game: Game) -> None:
     assert game.state == 'playing'
 
     p1_turn = game.current_leader
-    print(p1_turn)
-    # print([c for c in game.get_player(p1_turn).hand])
-    print(game.get_player(p1_turn).hand)
+    print('start turn:', p1_turn)
+    print([c for c in game.get_player(p1_turn).hand])
+    print('start hand:', game.get_player(p1_turn).hand)
 
     # End player turns
     game.end_turn()
     assert game.state == 'cleanup'
 
 
-def test_game_illegal_player(game: Game) -> None:
-    '''Test adding over maximum number of players.'''
-    with pytest.raises(exceptions.MaxPlayerException):
-        game.add_player(Player('Jackson'))
+# def test_game_illegal_player(game: Game) -> None:
+#     '''Test adding over maximum number of players.'''
+#     with pytest.raises(exceptions.MaxPlayerException):
+#         game.add_player(Player('Jackson'))
