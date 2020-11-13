@@ -28,33 +28,6 @@ class SetupMixin:
         '''Get current bidder.'''
         return (self.dealer + 1) % self.player_count
 
-    def deal(self) -> None:
-        '''Deal a new game.'''
-        if self.state == 'bidding':  # type: ignore
-            if self.player_count > 0:
-                card_piles: List[Hand] = []
-                for hand in range(0, self.player_count):
-                    card_piles.append(Hand())
-                turn = 0
-                for card in self.deck:
-                    card_piles[turn % len(card_piles)].add_card(card)
-                    turn += 1
-                for player in self._players:
-                    player.hand = card_piles.pop()
-            else:
-                raise NoPlayerException('no players in game')
-        else:
-            raise IllegalDeckException('cannot deal hand during active game')
-
-    def select_dealer(self) -> None:
-        '''Randomly choose starting player.'''
-        if self.player_count == Game.player_max:
-            if not self.dealer:
-                self.dealer = randrange(self.player_count)
-            else:
-                self.dealer = (self.dealer + 1) % self.player_count
-        print('dealer:', self.dealer, self._players[self.dealer].name)
-
     def current_bidder(self) -> int:
         '''Get identity of current bidder.'''
         return (self.current_turn + self.starting_bidder) % Game.player_max
@@ -96,21 +69,49 @@ class SetupMixin:
 
 
 class PlayerTurn:
-    '''Provide turn object.'''
+    '''Provide player turn object.'''
 
-    def __init__(self, players: List[Player]) -> None:
-        '''Initialize Deck.'''
+    def __init__(self, players: List[Player] = []) -> None:
+        '''Initialize player turns.'''
         self.__players: List[Player] = players
+        self.__current_turn = randrange(Game.player_max)
 
     def __iter__(self) -> 'PlayerTurn':
-        '''Return itself as iterator.'''
+        '''Return self as iterator.'''
+        self.__turn = 0
         return self
 
-    def __next__(self) -> Card:
+    def __next__(self) -> Player:
         '''Get next player instance.'''
-        if len(self.__players) <= Game.player_max:
+        if self.__turn >= self.player_count:
             raise StopIteration()
-        return self.__players.pop()
+        player = self.__players[self.current_turn]
+        self.__turn += 1
+        return player
+
+    @property
+    def player_count(self) -> int:
+        '''Get number of current players.'''
+        if self.__players:
+            return len(self.__players)
+        else:
+            return 0
+
+    @property
+    def current_turn(self) -> int:
+        '''Get identity of current player.'''
+        return (self.__turn + self.__current_turn) % self.player_count
+
+    @current_turn.setter
+    def current_turn(self, turn: int):
+        self.__current_turn = turn
+
+    def add_player(self, player: Player) -> None:
+        '''Add player to game.'''
+        if self.player_count < Game.player_max:
+            self.__players.append(player)
+        else:
+            raise MaxPlayerException('max number of players registered')
 
 
 class Game(SetupMixin):
@@ -200,6 +201,33 @@ class Game(SetupMixin):
     def current_leader(self, turn: int) -> None:
         '''Set current player turn.'''
         self._current_leader = turn
+
+    def deal(self) -> None:
+        '''Deal a new game.'''
+        if self.state == 'bidding':  # type: ignore
+            if self.player_count > 0:
+                card_piles: List[Hand] = []
+                for hand in range(0, self.player_count):
+                    card_piles.append(Hand())
+                turn = 0
+                for card in self.deck:
+                    card_piles[turn % len(card_piles)].add_card(card)
+                    turn += 1
+                for player in self._players:
+                    player.hand = card_piles.pop()
+            else:
+                raise NoPlayerException('no players in game')
+        else:
+            raise IllegalDeckException('cannot deal hand during active game')
+
+    def select_dealer(self) -> None:
+        '''Randomly choose starting player.'''
+        if self.player_count == Game.player_max:
+            if not self.dealer:
+                self.dealer = randrange(self.player_count)
+            else:
+                self.dealer = (self.dealer + 1) % self.player_count
+        print('dealer:', self.dealer, self._players[self.dealer].name)
 
     def get_player(self, number: int) -> Player:
         '''Get current player.'''
