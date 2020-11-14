@@ -24,6 +24,10 @@ class IllegalBidException(GameException):
     '''Provide exception on bids made out of turn.'''
 
 
+class IllegalPlayException(GameException):
+    '''Provide exception on plays made against rules.'''
+
+
 class NoPlayerException(GameException):
     '''Provide exception on no players in game.'''
 

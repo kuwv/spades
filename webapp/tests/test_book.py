@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# type: ignore
 # copyright: (c) 2020 by Jesse Johnson.
 # license: Apache 2.0, see LICENSE for more details.
 '''Test book.'''
@@ -17,12 +18,12 @@ def test_book():
     assert Card('K', 'Spades') in book
 
 
-def test_book_highcard():
+def test_book_trump():
     '''Test high card in book.'''
     book = Book()
     book.add_card(Card('2', 'Diamonds'))
     book.add_card(Card('10', 'Diamonds'))
-    assert book.high_card == Card('10', 'Diamonds')
+    assert book.trump == Card('10', 'Diamonds')
 
 
 def test_book_max():

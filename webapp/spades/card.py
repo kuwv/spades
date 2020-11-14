@@ -62,4 +62,4 @@ class Card:
             raise InvalidComparisonCardException(
                 'except for invalid comparison'
             )
-            return Card.suits.index(self.suit) > Card.suits.index(other.suit)
+            # return Card.suits.index(self.suit) > Card.suits.index(other.suit)

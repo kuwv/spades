@@ -37,6 +37,9 @@ class Hand:
         self.__count += 1
         return card
 
+    def list_suit(self, suit: str) -> List[str]:
+        return [c.rank for c in self.__hand if c.suit == suit]
+
     def add_card(self, card: Card) -> None:
         '''Add card to player hand.'''
         if len(self.__hand) < Hand.max_size:
