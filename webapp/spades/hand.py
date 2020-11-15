@@ -3,15 +3,16 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide hand capabilities.'''
 
-from typing import Optional, List
+from typing import List
 
+from spades import exceptions
 from spades.card import Card
-from spades.exceptions import MaxHandSizeException
 
 
 class Hand:
     '''Provide player hand object.'''
 
+    spades_broken = False
     max_size = 13
 
     def __init__(self) -> None:
@@ -23,6 +24,10 @@ class Hand:
         return (
             f"{self.__class__.__name__}(hand={self.__hand!r})"
         )
+
+    def __len__(self) -> int:
+        '''Return number of items.'''
+        return len(self.__hand)
 
     def __iter__(self) -> 'Hand':
         '''Return hand itself as iterator.'''
@@ -38,18 +43,40 @@ class Hand:
         return card
 
     def list_suit(self, suit: str) -> List[str]:
+        '''List items of a suit.'''
         return [c.rank for c in self.__hand if c.suit == suit]
+
+    def get_suit(self, suit: str) -> List[Card]:
+        '''Get all items of a suit.'''
+        return [c for c in self.__hand if c.suit == suit]
+
+    def playable(self, suit: str = None) -> List[Card]:
+        '''Get all playable cards.'''
+        if not suit and not Hand.spades_broken:
+            return [c for c in self.__hand if c.suit != 'Spades']
+        elif suit and len(self.get_suit(suit)) > 0:
+            return self.get_suit(suit)
+        else:
+            return self.__hand
 
     def add_card(self, card: Card) -> None:
         '''Add card to player hand.'''
         if len(self.__hand) < Hand.max_size:
-            self.__hand.append(card)
+            if card not in self.__hand:
+                self.__hand.append(card)
+            else:
+                exceptions.IllegalDeckException(
+                    'duplicate card already in hand'
+                )
         else:
-            raise MaxHandSizeException('maximum hand size')
+            raise exceptions.MaxHandSizeException('maximum hand size')
 
-    def pull_card(self, rank: str, suit: str) -> Optional[Card]:
+    def pull_card(self, rank: str, suit: str) -> Card:
         selection = Card(rank, suit)
         for card in self.__hand:
             if selection == card:
+                if selection.suit == 'Spades':
+                    Hand.spades_broken = True
+                self.__hand.remove(card)
                 return card
-        return None
+        raise exceptions.IllegalPlayException('player does not hold card')

@@ -17,11 +17,6 @@ class BidMixin:
         else:
             return self._bid_turn
 
-    @bid_turn.setter
-    def bid_turn(self, turn: int) -> None:
-        '''Set current total turn count.'''
-        self._bid_turn = turn
-
     @property
     def starting_bidder(self) -> int:
         '''Get current bidder.'''
@@ -42,7 +37,7 @@ class BidMixin:
                 if self._bid_turn < config.player_max:
                     print(self.current_bidder_name(player_id), bid)
                     self.players[player_id].bid = bid
-                    self.bid_turn += 1
+                    self._bid_turn += 1
                 else:
                     raise exceptions.IllegalBidException(
                         'no additional bids can be made'
@@ -56,10 +51,10 @@ class BidMixin:
                 'cannot bid during this phase'
             )
 
-    def check_bids(self) -> bool:
-        '''Check player bids.'''
-        count = 0
-        for player in self.players:
-            if player.bid:
-                count += 1
-        return True if count == config.player_max else False
+    # def check_bids(self) -> bool:
+    #     '''Check player bids.'''
+    #     count = 0
+    #     for player in self.players:
+    #         if player.bid:
+    #             count += 1
+    #     return True if count == config.player_max else False

@@ -14,15 +14,15 @@ from spades.book import Book
 def test_book():
     '''Test card in book.'''
     book = Book()
-    book.add_card(Card('K', 'Spades'))
+    book.add_trick(Card('K', 'Spades'))
     assert Card('K', 'Spades') in book
 
 
 def test_book_trump():
     '''Test high card in book.'''
     book = Book()
-    book.add_card(Card('2', 'Diamonds'))
-    book.add_card(Card('10', 'Diamonds'))
+    book.add_trick(Card('2', 'Diamonds'))
+    book.add_trick(Card('10', 'Diamonds'))
     assert book.trump == Card('10', 'Diamonds')
 
 
@@ -30,5 +30,5 @@ def test_book_max():
     '''Test maximum allowed cards in book.'''
     book = Book(1)
     with pytest.raises(MaxBookSizeException):
-        book.add_card(Card('2', 'Hearts'))
-        book.add_card(Card('3', 'Hearts'))
+        book.add_trick(Card('2', 'Hearts'))
+        book.add_trick(Card('3', 'Hearts'))

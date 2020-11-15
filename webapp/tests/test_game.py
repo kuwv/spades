@@ -4,6 +4,8 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide tests for game.'''
 
+from random import randrange
+
 import pytest
 
 from spades import exceptions
@@ -21,8 +23,27 @@ def setup_game() -> Game:
     return game
 
 
+def generate_bid(game: Game):
+    turn = game.current_bidder()
+    bid = randrange(0, 13)
+    game.accept_bid(turn, bid)
+    assert game.get_player(turn).bid == bid
+
+
+def generate_trick(game: Game):
+    turn = game.current_turn
+    print('turn:', turn)
+    player = game.get_player(turn)
+    playable = player.hand.playable(game.stack.suit)
+    card = [c for c in playable][0]
+    game.play_trick(turn, card.rank, card.suit)
+    # print('start hand:', game.get_player(turn).hand)
+
+
 def test_game_states(game: Game) -> None:
     '''Test game states.'''
+
+    # while not game.check_winner():
 
     # start the game from waiting state
     assert game.state == 'waiting'
@@ -31,66 +52,43 @@ def test_game_states(game: Game) -> None:
     # start accepting bids
     assert game.state == 'bidding'
 
-    # player 1 bid
-    p1_turn = game.current_bidder()
-    game.accept_bid(p1_turn, 4)
-    assert game.get_player(p1_turn).bid == 4
-
-    # player 2 bid
-    p2_turn = game.current_bidder()
-    game.accept_bid(p2_turn, 2)
-    assert game.get_player(p2_turn).bid == 2
-
-    # player 3 bid
-    p3_turn = game.current_bidder()
-    game.accept_bid(p3_turn, 3)
-    assert game.get_player(p3_turn).bid == 3
-
-    # ensure last bidder is accounted for
+    # ensure all bidders have been accounted for
     game.start_turn()
-    assert game.state == 'bidding'
+    assert game.state != 'playing'
 
-    # player 4 bid
-    p4_turn = game.current_bidder()
-    game.accept_bid(p4_turn, 2)
-    assert game.get_player(p4_turn).bid == 2
+    for _ in [1, 2, 3, 4]:
+        generate_bid(game)
 
     # check that no other bid can be made
     with pytest.raises(exceptions.IllegalBidException):
         game.accept_bid(game.current_bidder(), 2)
 
-    # Start player turns
-    game.start_turn()
-    assert game.state == 'playing'
+    while not game.check_handsize():
+        # start player turns
+        game.start_turn()
+        assert game.state == 'playing'
 
-    p1_turn = game.starting_turn
-    print('start turn:', p1_turn)
-    card = [c for c in game.get_player(p1_turn).hand][0]
-    game.accept_card(p1_turn, card.rank, card.suit)
-    # print('start hand:', game.get_player(p1_turn).hand)
+        # check that all tricks have been accounted for
+        game.end_turn()
+        assert game.state != 'cleanup'
 
-    p2_turn = game.current_turn
-    print('second turn:', p2_turn)
-    card = [c for c in game.get_player(p2_turn).hand][0]
-    game.accept_card(p2_turn, card.rank, card.suit)
-    # print('start hand:', game.get_player(p2_turn).hand)
+        for _ in [1, 2, 3, 4]:
+            generate_trick(game)
 
-    p3_turn = game.current_turn
-    print('third turn:', p3_turn)
-    card = [c for c in game.get_player(p3_turn).hand][0]
-    game.accept_card(p3_turn, card.rank, card.suit)
-    # print('start hand:', game.get_player(p3_turn).hand)
+        # TODO: fix exception test; pulls extra card
+        # with pytest.raises(exceptions.MaxBookSizeException):
+        #     generate_trick(game)
 
-    p4_turn = game.current_turn
-    print('forth turn:', p4_turn)
-    card = [c for c in game.get_player(p4_turn).hand][0]
-    game.accept_card(p4_turn, card.rank, card.suit)
-    # print('start hand:', game.get_player(p4_turn).hand)
+        # end turn
+        game.end_turn()
+        assert game.state == 'cleanup'
 
-    # End player turns
-    game.end_turn()
-    assert game.state == 'cleanup'
-
+        # ensure match cannot be ended with cards in hand
+        game.end_match()
+        if not game.check_handsize():
+            assert game.state != 'waiting'
+        else:
+            assert game.state == 'waiting'
 
 # def test_game_illegal_player(game: Game) -> None:
 #     '''Test adding over maximum number of players.'''

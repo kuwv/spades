@@ -51,15 +51,17 @@ class Book:
     def suit(self) -> Optional[str]:
         return self.__suit
 
-    def add_card(self, player_id: int, card: Card) -> None:
+    def add_trick(self, player_id: int, card: Card) -> None:
         '''Add card to book.'''
+        # print('trick', player_id, card)
         if len(self.__stack) < Book.card_max:
             if self.__stack == []:
+                self.__lead_player = player_id
                 self.__suit = card.suit
                 self.__trump = card
             elif self.__suit == card.suit or card.suit == 'Spades':
                 if self.__trump < card:
-                    self.lead_player = player_id
+                    self.__lead_player = player_id
                     self.__trump = card
             self.__stack.append(card)
         else:
