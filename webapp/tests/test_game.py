@@ -4,8 +4,6 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide tests for game.'''
 
-from random import randrange
-
 import pytest
 
 from spades import exceptions
@@ -22,19 +20,20 @@ game.add_player(Player('Kim'))
 
 def generate_bid(g: Game):
     turn = g.current_bidder()
-    bid = randrange(0, 13)
+    player = g.get_player(turn)
+    bid = len(player.hand.list_suit('Spades'))
     g.accept_bid(turn, bid)
-    assert g.get_player(turn).bid == bid
+    assert player.bid == bid
 
 
 def generate_trick(g: Game):
     turn = g.current_turn
-    print('turn:', turn)
+    # print('turn:', turn)
     player = g.get_player(turn)
     playable = player.hand.playable(g.stack.suit)
     card = [c for c in playable][0]
     g.play_trick(turn, card.rank, card.suit)
-    # print('start hand:', game.get_player(turn).hand)
+    # print(f"{player.name} hand: {player.hand}")
 
 
 def test_game_states() -> None:
@@ -44,51 +43,66 @@ def test_game_states() -> None:
     with pytest.raises(exceptions.InvalidPlayerException):
         game.add_player(Player('Jackson'))
 
-    # while not game.check_winner():
+    count = 0
+    while not game.check_winner():
+        print('start new match')
 
-    # start the game from waiting state
-    assert game.state == 'waiting'
-    game.start_game()
+        # start the game from waiting state
+        assert game.state == 'waiting'
+        # print(f"{game.state} == waiting")
 
-    # start accepting bids
-    assert game.state == 'bidding'
+        # start accepting bids
+        game.start_game()
+        assert game.state == 'bidding'
+        # print(f"{game.state} == bidding")
 
-    # ensure all bidders have been accounted for
-    game.start_turn()
-    assert game.state != 'playing'
-
-    # TODO: switch to turn iterator
-    for _ in [1, 2, 3, 4]:
-        generate_bid(game)
-
-    # check that no other bid can be made
-    with pytest.raises(exceptions.IllegalBidException):
-        game.accept_bid(game.current_bidder(), 2)
-
-    while not game.check_handsize():
-        # start player turns
+        # ensure all bidders have been accounted for
         game.start_turn()
-        assert game.state == 'playing'
-
-        # check that all tricks have been accounted for
-        game.end_turn()
-        assert game.state != 'cleanup'
+        assert game.state != 'playing'
+        # print(f"{game.state} != playing")
 
         # TODO: switch to turn iterator
-        for x in [1, 2, 3, 4]:
-            generate_trick(game)
+        for _ in [1, 2, 3, 4]:
+            generate_bid(game)
 
-            if x == 4 and len(game.get_player(game.current_turn).hand) > 0:
-                with pytest.raises(exceptions.IllegalTurnException):
-                    generate_trick(game)
+        # check that no other bid can be made
+        with pytest.raises(exceptions.IllegalBidException):
+            game.accept_bid(game.current_bidder(), 2)
 
-        # end turn
-        game.end_turn()
-        assert game.state == 'cleanup'
+        while not game.check_handsize():
+            # start player turns
+            game.start_turn()
+            assert game.state == 'playing'
 
-        # ensure match cannot be ended with cards in hand
-        game.end_match()
-        if not game.check_handsize():
-            assert game.state != 'waiting'
-        else:
-            assert game.state == 'waiting'
+            # check that all tricks have been accounted for
+            game.end_turn()
+            assert game.state != 'cleanup'
+
+            # TODO: switch to turn iterator
+            for x in [1, 2, 3, 4]:
+                generate_trick(game)
+
+                # if x == 4 and len(
+                #     game.get_player(game.current_turn).hand
+                # ) > 0:
+                #     with pytest.raises(exceptions.IllegalTurnException):
+                #         generate_trick(game)
+
+            # end turn
+            game.end_turn()
+            assert game.state == 'cleanup'
+
+            # ensure match cannot be ended with cards in hand
+            game.end_match()
+            if not game.check_handsize():
+                # print('not waiting')
+                assert game.state != 'waiting'
+            else:
+                # print('wating now')
+                assert game.state == 'waiting'
+        count += 1
+        print('match count:', count)
+
+        game.end_game()
+        print('is game over:', game.state)
+    game.state == 'waiting'

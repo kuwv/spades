@@ -53,7 +53,8 @@ class Hand:
     def playable(self, suit: str = None) -> List[Card]:
         '''Get all playable cards.'''
         if not suit and not Hand.spades_broken:
-            return [c for c in self.__hand if c.suit != 'Spades']
+            hand = [c for c in self.__hand if c.suit != 'Spades']
+            return self.__hand if hand == [] else hand
         elif suit and len(self.get_suit(suit)) > 0:
             return self.get_suit(suit)
         else:
@@ -65,7 +66,7 @@ class Hand:
             if card not in self.__hand:
                 self.__hand.append(card)
             else:
-                exceptions.IllegalDeckException(
+                exceptions.InvalidDeckException(
                     'duplicate card already in hand'
                 )
         else:

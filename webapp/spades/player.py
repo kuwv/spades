@@ -33,6 +33,34 @@ class Player(User):
         self.__hand: Optional[Hand] = None
         self.__books: Set[Book] = set()
         self.__bid: Optional[int] = None
+        self.__score: int = 0
+
+    @property
+    def score(self) -> int:
+        return self.__score
+
+    @score.setter
+    def score(self, clean: bool = False) -> None:
+        books = len(self.books)
+        if self.bid == 0:
+            if books == 0:
+                score = 50
+            else:
+                score = -50
+        elif self.bid >= books:
+            if self.bid > books:
+                extra = self.bid - books
+                score = books * 10
+                score += extra
+            else:
+                score = books * 10
+        else:
+            score = books * -10
+        if clean:
+            self.__books = set()
+            self.__bid = None
+            Hand.spades_broken = False
+        self.__score = score
 
     @property
     def hand(self) -> Optional[Hand]:
@@ -48,6 +76,10 @@ class Player(User):
     def books(self) -> Set[Book]:
         '''Get awarded books.'''
         return self.__books
+
+    @books.setter
+    def books(self, book: Optional[Book]) -> None:
+        self.__books.add(book)
 
     @property
     def bid(self) -> Optional[int]:
@@ -67,7 +99,3 @@ class Player(User):
             raise exceptions.EmptyHandSizeException(
                 'player has no cards to play'
             )
-
-    def add_book(self, book: Book) -> None:
-        '''Add book to players pile.'''
-        self.__books.add(book)
