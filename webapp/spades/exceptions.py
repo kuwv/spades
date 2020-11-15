@@ -12,12 +12,12 @@ class IllegalTurnException(GameException):
     '''Provide exception on unavailable command during phase.'''
 
 
-class IllegalDeckException(GameException):
+class InvalidDeckException(GameException):
     '''Provide exception on dealing deck during current game.'''
 
 
-class IllegalPlayerException(GameException):
-    '''Provide exception on adding players during game.'''
+class InvalidPlayerException(GameException):
+    '''Provide exception on invalid player actions.'''
 
 
 class IllegalBidException(GameException):
@@ -26,14 +26,6 @@ class IllegalBidException(GameException):
 
 class IllegalPlayException(GameException):
     '''Provide exception on plays made against rules.'''
-
-
-class NoPlayerException(GameException):
-    '''Provide exception on no players in game.'''
-
-
-class MaxPlayerException(GameException):
-    '''Provide exception on maximum players in game.'''
 
 
 class MaxHandSizeException(GameException):

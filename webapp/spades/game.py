@@ -176,9 +176,9 @@ class Game(BidMixin, PlayerTurns):
                 for player in self.players:
                     player.hand = card_piles.pop()
             else:
-                raise exceptions.NoPlayerException('no players in game')
+                raise exceptions.InvalidPlayerException('no players in game')
         else:
-            raise exceptions.IllegalDeckException(
+            raise exceptions.InvalidDeckException(
                 'cannot deal hand during active game'
             )
 
@@ -193,11 +193,11 @@ class Game(BidMixin, PlayerTurns):
             if self.player_count < Game.player_max:
                 PlayerTurns.append_player(self, player)
             else:
-                raise exceptions.MaxPlayerException(
+                raise exceptions.InvalidPlayerException(
                     'max number of players registered'
                 )
         else:
-            raise exceptions.IllegalPlayerException(
+            raise exceptions.InvalidPlayerException(
                 'cannot add player during game'
             )
 
@@ -208,24 +208,36 @@ class Game(BidMixin, PlayerTurns):
     def play_trick(self, player_id: str, rank: str, suit: str) -> bool:
         '''Move player card to book.'''
         if self.state == 'playing':
-            # TODO: must compare user / turn
-            player = self.get_player(player_id)
-            if (
-                len(self.__stack) == 0 or
-                suit == self.__stack.suit or
-                len(player.hand.list_suit(self.__stack.suit)) <= 0
-            ):
-                self.__stack.add_trick(player_id, player.play_card(rank, suit))
-                self.current_turn += 1
+            print
+            if player_id == self.current_turn:
+                if len(self.stack) < self.player_count:
+                    player = self.get_player(player_id)
+                    if (
+                        len(self.__stack) == 0 or
+                        suit == self.__stack.suit or
+                        len(player.hand.list_suit(self.__stack.suit)) <= 0
+                    ):
+                        self.__stack.add_trick(
+                            player_id,
+                            player.play_card(rank, suit)
+                        )
+                        self.current_turn += 1
+                    else:
+                        raise exceptions.IllegalPlayException(
+                            'cards of same suit must may be played'
+                        )
+                    print('play:', self.get_player(player_id).name, rank, suit)
+                else:
+                    raise exceptions.IllegalTurnException(
+                        'current turn is already finished'
+                    )
             else:
-                raise exceptions.IllegalPlayException(
-                    'cards of same suit must may be played'
+                raise exceptions.IllegalTurnException(
+                    'players may only play during their turn'
                 )
-            print('play:', self.get_player(player_id).name, rank, suit)
-            # print('stack', self.stack)
         else:
             raise exceptions.IllegalTurnException(
-                'cannot play during this phase'
+                'cannot play during other phase'
             )
 
     def __award_book(self) -> None:

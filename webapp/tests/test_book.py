@@ -6,7 +6,7 @@
 
 import pytest
 
-from spades.exceptions import MaxBookSizeException
+from spades import exceptions
 from spades.card import Card
 from spades.book import Book
 
@@ -29,6 +29,6 @@ def test_book_trump():
 def test_book_max():
     '''Test maximum allowed cards in book.'''
     book = Book(1)
-    with pytest.raises(MaxBookSizeException):
+    with pytest.raises(exceptions.MaxBookSizeException):
         book.add_trick(Card('2', 'Hearts'))
         book.add_trick(Card('3', 'Hearts'))

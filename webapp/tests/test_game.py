@@ -13,35 +13,36 @@ from spades.game import Game
 from spades.player import Player
 
 
-@pytest.fixture(name='game')
-def setup_game() -> Game:
-    game = Game()
-    game.add_player(Player('Jim'))
-    game.add_player(Player('Mike'))
-    game.add_player(Player('Jill'))
-    game.add_player(Player('Kim'))
-    return game
+game = Game()
+game.add_player(Player('Jim'))
+game.add_player(Player('Mike'))
+game.add_player(Player('Jill'))
+game.add_player(Player('Kim'))
 
 
-def generate_bid(game: Game):
-    turn = game.current_bidder()
+def generate_bid(g: Game):
+    turn = g.current_bidder()
     bid = randrange(0, 13)
-    game.accept_bid(turn, bid)
-    assert game.get_player(turn).bid == bid
+    g.accept_bid(turn, bid)
+    assert g.get_player(turn).bid == bid
 
 
-def generate_trick(game: Game):
-    turn = game.current_turn
+def generate_trick(g: Game):
+    turn = g.current_turn
     print('turn:', turn)
-    player = game.get_player(turn)
-    playable = player.hand.playable(game.stack.suit)
+    player = g.get_player(turn)
+    playable = player.hand.playable(g.stack.suit)
     card = [c for c in playable][0]
-    game.play_trick(turn, card.rank, card.suit)
+    g.play_trick(turn, card.rank, card.suit)
     # print('start hand:', game.get_player(turn).hand)
 
 
-def test_game_states(game: Game) -> None:
+def test_game_states() -> None:
     '''Test game states.'''
+
+    # test adding over maximum number of players.
+    with pytest.raises(exceptions.InvalidPlayerException):
+        game.add_player(Player('Jackson'))
 
     # while not game.check_winner():
 
@@ -56,6 +57,7 @@ def test_game_states(game: Game) -> None:
     game.start_turn()
     assert game.state != 'playing'
 
+    # TODO: switch to turn iterator
     for _ in [1, 2, 3, 4]:
         generate_bid(game)
 
@@ -72,12 +74,13 @@ def test_game_states(game: Game) -> None:
         game.end_turn()
         assert game.state != 'cleanup'
 
-        for _ in [1, 2, 3, 4]:
+        # TODO: switch to turn iterator
+        for x in [1, 2, 3, 4]:
             generate_trick(game)
 
-        # TODO: fix exception test; pulls extra card
-        # with pytest.raises(exceptions.MaxBookSizeException):
-        #     generate_trick(game)
+            if x == 4 and len(game.get_player(game.current_turn).hand) > 0:
+                with pytest.raises(exceptions.IllegalTurnException):
+                    generate_trick(game)
 
         # end turn
         game.end_turn()
@@ -89,8 +92,3 @@ def test_game_states(game: Game) -> None:
             assert game.state != 'waiting'
         else:
             assert game.state == 'waiting'
-
-# def test_game_illegal_player(game: Game) -> None:
-#     '''Test adding over maximum number of players.'''
-#     with pytest.raises(exceptions.MaxPlayerException):
-#         game.add_player(Player('Jackson'))
