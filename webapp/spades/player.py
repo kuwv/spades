@@ -33,6 +33,7 @@ class Player(User):
         self.__hand: Optional[Hand] = None
         self.__books: Set[Book] = set()
         self.__bid: Optional[int] = None
+        self.__bags: int = 0
         self.__score: int = 0
 
     @property
@@ -41,6 +42,8 @@ class Player(User):
 
     @score.setter
     def score(self, clean: bool = False) -> None:
+        '''Score players hand.'''
+        # TODO overtricks
         books = len(self.books)
         if self.bid == 0:
             if books == 0:
@@ -49,9 +52,14 @@ class Player(User):
                 score = -50
         elif self.bid >= books:
             if self.bid > books:
-                extra = self.bid - books
+                bags = self.bid - books
                 score = books * 10
-                score += extra
+                if (self.__bags + bags) < 10:
+                    self.__bags += bags
+                    score += bags
+                else:
+                    score -= (100 - bags)
+                    self.__bags = 0
             else:
                 score = books * 10
         else:
@@ -78,7 +86,7 @@ class Player(User):
         return self.__books
 
     @books.setter
-    def books(self, book: Optional[Book]) -> None:
+    def books(self, book: Book) -> None:
         self.__books.add(book)
 
     @property
