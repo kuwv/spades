@@ -6,8 +6,8 @@
 from typing import List, Optional
 
 from spades import config
-from spades.card import Card
-from spades.exceptions import MaxBookSizeException
+from spades import exceptions
+from spades.models.card import Card
 
 
 class Book:
@@ -40,6 +40,7 @@ class Book:
 
     @property
     def winner(self) -> Optional[None]:
+        '''Get winner of book.'''
         return self.__lead_player
 
     @property
@@ -49,6 +50,7 @@ class Book:
 
     @property
     def suit(self) -> Optional[str]:
+        '''Get opening suit of book.'''
         return self.__suit
 
     def add_trick(self, player_id: int, card: Card) -> None:
@@ -65,4 +67,4 @@ class Book:
                     self.__trump = card
             self.__stack.append(card)
         else:
-            raise MaxBookSizeException('max book size')
+            raise exceptions.MaxBookSizeException('max book size')

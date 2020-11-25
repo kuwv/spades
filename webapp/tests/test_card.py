@@ -10,7 +10,7 @@ from spades.exceptions import (
     InvalidSuitCardException,
     InvalidComparisonCardException
 )
-from spades.card import Card
+from spades.models.card import Card
 
 
 def test_card() -> None:

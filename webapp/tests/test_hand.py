@@ -1,9 +1,8 @@
 # type: ignore
-
 '''Test hand.'''
 
-from spades.card import Card
-from spades.player import Hand
+from spades.models.card import Card
+from spades.models.player import Hand
 
 
 def test_hand() -> None:

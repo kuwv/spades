@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+# type: ignore
 # copyright: (c) 2020 by Jesse Johnson.
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide tests for deck.'''
 
-from spades.card import Card
-from spades.deck import Deck
+from spades.models.card import Card
+from spades.models.deck import Deck
 
 
 def test_deck():

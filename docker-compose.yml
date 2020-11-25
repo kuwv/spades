@@ -1,52 +1,41 @@
-# ---
-# version: '3.4'
-#
-# networks:
-#   kong-net:
-#   keycloak-net:
-#
-# volumes:
-#   kong-datastore:
-#   keycloak-datastore:
-#
-# services:
-#   kong-db:
-#     image: postgres:9.6
-#     volumes:
-#       - kong-datastore:/var/lib/postgresql/data
-#     networks:
-#       - kong-net
-#     ports:
-#       - "15432:5432"
-#     environment:
-#       POSTGRES_DB: api-gw
-#       POSTGRES_USER: kong
-#       POSTGRES_PASSWORD:
-#
-#   kong:
-#     image: kong:0.14-centos-oidc
-#     depends_on:
-#       - kong-db
-#     networks:
-#       - kong-net
-#     ports:
-#       - "8000:8000"  # Listener
-#       - "8001:8001"  # Admin API
-#       - "8443:8443"  # Listener (SSL)
-#       - "8444:8444"  # Admin API (SSL)
-#     environment:
-#       KONG_DATABASE: postgres
-#       KONG_PG_HOST: kong-db
-#       KONG_PG_PORT: 5432
-#       KONG_PG_DATABASE: api-gw
-#       KONG_PROXY_ACCESS_LOG: /dev/stdout
-#       KONG_ADMIN_ACCESS_LOG: /dev/stdout
-#       KONG_PROXY_ERROR_LOG: /dev/stderr
-#       KONG_ADMIN_ERROR_LOG: /dev/stderr
-#       KONG_PROXY_LISTEN: 0.0.0.0:8000, 0.0.0.0:8443 ssl
-#       KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
-#       KONG_PLUGINS: oidc
-#
+---
+version: '3.8'
+
+networks:
+  postgres-net:
+  redis-net:
+  # keycloak-net:
+
+volumes:
+  postgres-datastore:
+  redis-datastore:
+  # keycloak-datastore:
+
+services:
+  spades-db:
+    image: centos/postgresql-12-centos7
+    volumes:
+      - postgres-datastore:/var/lib/postgresql/data
+    networks:
+      - postgres-net
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRESQL_DATABASE: spades
+      POSTGRESQL_USER: spades
+      POSTGRESQL_PASSWORD: password
+
+  redis:
+    image: centos/redis-5-centos7
+    volumes:
+      - redis-datastore:/var/lib/redis/data
+    networks:
+      - redis-net
+    ports:
+      - '6379:6379'
+    environment:
+      REDIS_PASSWORD: password
+
 #   keycloak-db:
 #     image: postgres:9.6
 #     volumes:
@@ -54,11 +43,11 @@
 #     networks:
 #       - keycloak-net
 #     ports:
-#       - "25432:5432"
+#       - '25432:5432'
 #     environment:
-#       POSTGRES_DB: keycloak
-#       POSTGRES_USER: keycloak
-#       POSTGRES_PASSWORD: password
+#       REDIS_DB: keycloak
+#       REDIS_USER: keycloak
+#       REDIS_PASSWORD: password
 #
 #   keycloak:
 #     image: jboss/keycloak:4.5.0.Final
@@ -67,7 +56,7 @@
 #     networks:
 #       - keycloak-net
 #     ports:
-#       - "8180:8080"
+#       - '8180:8080'
 #     environment:
 #       DB_VENDOR: POSTGRES
 #       DB_ADDR: keycloak-db

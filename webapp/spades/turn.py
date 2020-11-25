@@ -9,7 +9,7 @@ from typing import List, Optional
 
 from spades import config
 from spades import exceptions
-from spades.player import Player
+from spades.models.player import Player
 
 
 class PlayerTurns:
@@ -37,6 +37,7 @@ class PlayerTurns:
 
     @property
     def players(self) -> List[Player]:
+        '''Get players.'''
         return self.__players
 
     @property
@@ -65,6 +66,6 @@ class PlayerTurns:
         '''Get current player.'''
         return self.__players[turn % self.player_count]
 
-    def get_player_by_name(self, name: str) -> Optional[Player]:
-        '''Get current player by name.'''
-        return next((p for p in self.__players if p.name == name), None)
+    def get_player_by_username(self, username: str) -> Optional[Player]:
+        '''Get current player by username.'''
+        return next((p for p in self.__players if p.username == username), None)

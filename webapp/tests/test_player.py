@@ -2,15 +2,20 @@
 # type: ignore
 # copyright: (c) 2020 by Jesse Johnson.
 # license: Apache 2.0, see LICENSE for more details.
-'''Provide tests for game.'''
+'''Provide tests for players.'''
 
 # import pytest
-#
-# # from spades import exceptions
-# from spades.game import Game, PlayerTurns
-# from spades.player import Player
-#
-#
+
+from spades.models.user import User
+
+
+def test_password():
+    '''Test user passwords.'''
+    user = User(username='test')
+    user.set_password('password')
+    assert user.check_password('password')
+
+
 # def test_turn() -> None:
 #     player_turns = PlayerTurns()
 #     player_turns.add_player(Player('Jim'))
@@ -18,7 +23,7 @@
 #     player_turns.add_player(Player('Jill'))
 #     player_turns.add_player(Player('Kim'))
 #     for player in player_turns:
-#         print('name:', player.name)
+#         print('username:', player.username)
 #
 #     turns = iter(player_turns)
 #     player_one = next(turns)

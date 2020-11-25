@@ -6,7 +6,7 @@
 from typing import List
 
 from spades import exceptions
-from spades.card import Card
+from spades.models.card import Card
 
 
 class Hand:
@@ -73,6 +73,7 @@ class Hand:
             raise exceptions.MaxHandSizeException('maximum hand size')
 
     def pull_card(self, rank: str, suit: str) -> Card:
+        '''Pull card from hand to play.'''
         selection = Card(rank, suit)
         for card in self.__hand:
             if selection == card:

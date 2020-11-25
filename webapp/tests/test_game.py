@@ -8,7 +8,7 @@ import pytest
 
 from spades import exceptions
 from spades.game import Game
-from spades.player import Player
+from spades.models.player import Player
 
 
 game = Game()
@@ -33,7 +33,7 @@ def generate_trick(g: Game):
     playable = player.hand.playable(g.stack.suit)
     card = [c for c in playable][0]
     g.play_trick(turn, card.rank, card.suit)
-    # print(f"{player.name} hand: {player.hand}")
+    # print(f"{player.username} hand: {player.hand}")
 
 
 def test_game_states() -> None:
@@ -82,11 +82,11 @@ def test_game_states() -> None:
             for x in [1, 2, 3, 4]:
                 generate_trick(game)
 
-                # if x == 4 and len(
-                #     game.get_player(game.current_turn).hand
-                # ) > 0:
-                #     with pytest.raises(exceptions.IllegalTurnException):
-                #         generate_trick(game)
+                if x == 4 and len(
+                    game.get_player(game.current_turn).hand
+                ) > 0:
+                    with pytest.raises(exceptions.IllegalTurnException):
+                        generate_trick(game)
 
             # end turn
             game.end_turn()
@@ -104,5 +104,4 @@ def test_game_states() -> None:
         print('match count:', count)
 
         game.end_game()
-        print('is game over:', game.state)
-    game.state == 'waiting'
+    assert game.state == 'waiting'

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# type: ignore
 # copyright: (c) 2020 by Jesse Johnson.
 # license: Apache 2.0, see LICENSE for more details.
 '''Static Content Task-Runner.'''
@@ -39,9 +40,10 @@ def start(
     if port:
         args.append(f"--port={port}")
     with ctx.cd(path):
+        print("npx vue-cli-service serve {}".format(' '.join(args)))
         ctx.run(
-            """npx vue-cli-service serve {}""".format(' '.join(args)),
-            disown=True
+            "npx vue-cli-service serve",  # {}".format(' '.join(args)),
+            asynchronous=True
         )
 
 

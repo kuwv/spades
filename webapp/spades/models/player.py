@@ -6,30 +6,17 @@
 from typing import Optional, Set
 
 from spades import exceptions
-from spades.book import Book
-from spades.card import Card
-from spades.hand import Hand
-
-
-class User:
-    '''Provide user object.'''
-
-    def __init__(self, name: str) -> None:
-        '''Initialize user.'''
-        self.__name = name
-
-    @property
-    def name(self) -> str:
-        '''Get user name.'''
-        return self.__name
+from spades.models.book import Book
+from spades.models.card import Card
+from spades.models.hand import Hand
+from spades.models.user import User
 
 
 class Player(User):
     '''Provide player object.'''
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, username: str) -> None:
         '''Initialize player.'''
-        super().__init__(name)
         self.__hand: Optional[Hand] = None
         self.__books: Set[Book] = set()
         self.__bid: Optional[int] = None
@@ -38,6 +25,7 @@ class Player(User):
 
     @property
     def score(self) -> int:
+        '''Get player score.'''
         return self.__score
 
     @score.setter
@@ -87,6 +75,7 @@ class Player(User):
 
     @books.setter
     def books(self, book: Book) -> None:
+        '''Get player books won.'''
         self.__books.add(book)
 
     @property

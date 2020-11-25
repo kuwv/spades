@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="game-login">
+  <form class="pure-form pure-form-aligned" method="POST" action="/login">
+    {{ form.csrf_token }}
+    <fieldset>
+      <div class="pure-control-group">
+        {{ form.username.label }}
+        {{ form.username }}
+        <span class="pure-form-message-inline">This is a required field.</span>
+      </div>
+      <div class="pure-control-group">
+        {{ form.password.label }}
+        {{ form.password }}
+      </div>
+      <div class="pure-controls">
+        {{ form.submit() }}
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}

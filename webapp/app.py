@@ -1,63 +1,47 @@
-'''Provide application interface.'''
+#!/usr/bin/env python
+'''Provide webapp start.'''
 
-from flask import Flask
-from flask_jwt import JWT, current_identity, jwt_required
-from werkzeug.security import safe_str_cmp
+from spades import create_app
 
-
-class User(object):
-    '''Provide abstract user.'''
-
-    def __init__(self, ident, username, password):
-        '''Initialize user object.'''
-        self.id = ident
-        self.username = username
-        self.password = password
-
-    def __str__(self):
-        '''Retrieve user string.'''
-        return "User(id='%s')" % self.id
+app = create_app()
 
 
-users = [
-    User(1, 'user1', 'abcxyz'),
-    User(2, 'user2', 'abcxyz'),
-]
-
-username_table = {u.username: u for u in users}
-userid_table = {u.id: u for u in users}
-
-
-def authenticate(username, password):
-    '''Authenticate user.'''
-    user = username_table.get(username, None)
-    if user and safe_str_cmp(
-        user.password.encode('utf-8'),
-        password.encode('utf-8')
-    ):
-        return user
-
-
-def identity(payload):
-    '''Retreive user identity.'''
-    user_id = payload['identity']
-    return userid_table.get(user_id, None)
-
-
-app = Flask(
-    __name__,
-    static_url_path='',
-    static_folder='static/dist',
-    # template_folder='templates'
-)
-app.debug = True
-app.config['SECRET_KEY'] = 'super-secret'
-
-jwt = JWT(app, authenticate, identity)
-
-
-@app.route('/protected')
-@jwt_required()
-def protected():
-    '''Check protected resource.'''
-    return '%s' % current_identity
+# import multiprocessing
+# from typing import Any, Dict
+#
+# from flask import Flask
+# from gunicorn.app.base import BaseApplication
+#
+# from spades import create_app
+#
+#
+# def number_of_workers() -> int:
+#     return (multiprocessing.cpu_count() * 2) + 1
+#
+#
+# class WebApplication(BaseApplication):
+#
+#     def __init__(self, app: Flask, options: Dict[Any, Any] = None) -> None:
+#         self.options = options or {}
+#         self.application = app
+#         super().__init__()
+#
+#     def load_config(self) -> None:
+#         config = {
+#             key: value
+#             for key, value in self.options.items()
+#             if key in self.cfg.settings and value is not None
+#         }
+#         for key, value in config.items():
+#             self.cfg.set(key.lower(), value)
+#
+#     def load(self) -> Flask:
+#         return self.application
+#
+#
+# if __name__ == '__main__':
+#     options = {
+#         'bind': '%s:%s' % ('127.0.0.1', '8080'),
+#         'workers': number_of_workers(),
+#     }
+#     WebApplication(create_app(), options).run()

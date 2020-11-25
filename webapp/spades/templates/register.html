@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<dic class"game-register">
+  <form class="pure-form pure-form-aligned" method="POST" action="/register">
+    {{ form.csrf_token }}
+    <fieldset>
+      <div class="pure-control-group">
+        {{ form.username.label }}
+        {{ form.username() }}
+      </div>
+      {% for error in form.username.errors %}
+        <div class="pure-control-group">
+          <span style="color: red;">{{ error }}</span>
+        </div>
+      {% endfor %}
+      <div class="pure-control-group">
+        {{ form.password.label }}
+        {{ form.password() }}
+      </div>
+      {% for error in form.password.errors %}
+        <div class="pure-control-group">
+          <span style="color: red;">{{ error }}</span>
+        </div>
+      {% endfor %}
+      <div class="pure-control-group">
+        {{ form.confirm.label }}
+        {{ form.confirm() }}
+      </div>
+      {% for error in form.confirm.errors %}
+        <div class="pure-control-group">
+          <span style="color: red;">{{ error }}</span>
+        </div>
+      {% endfor %}
+      <div class="pure-controls">
+        {{ form.submit() }}
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}

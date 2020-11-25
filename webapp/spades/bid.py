@@ -26,16 +26,16 @@ class BidMixin:
         '''Get identity of current bidder.'''
         return (self.bid_turn + self.starting_bidder) % config.player_max
 
-    def current_bidder_name(self, turn: int) -> str:
-        '''Get current bidder name.'''
-        return self.players[turn].name
+    def current_bidder_username(self, turn: int) -> str:
+        '''Get current bidder username.'''
+        return self.players[turn].username
 
     def accept_bid(self, player_id: int, bid: int) -> bool:
         '''Accpet bids from players.'''
         if self.state == 'bidding':
             if player_id == self.current_bidder():
                 if self._bid_turn < config.player_max:
-                    print(self.current_bidder_name(player_id), bid)
+                    print(self.current_bidder_username(player_id), bid)
                     self.players[player_id].bid = bid
                     self._bid_turn += 1
                 else:

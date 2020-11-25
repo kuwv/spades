@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# type: ignore
 # copyright: (c) 2020 by Jesse Johnson.
 # license: Apache 2.0, see LICENSE for more details.
 '''Build Task-Runner.'''
@@ -64,6 +65,7 @@ def clean(ctx):  # type: ignore
         '**/dist',
         '**/node_modules',
         '**/site',
+        '**/flask_session',
     ]
     for path in paths:
         ctx.run("rm -rf {}".format(path))

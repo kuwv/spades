@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+# type: ignore
 # copyright: (c) 2020 by Jesse Johnson.
 # license: Apache 2.0, see LICENSE for more details.
 '''Quality Assurance Task-Runner.'''
 
-from invoke import task  # type: ignore
+from invoke import task
 
 from . import config
 
@@ -11,9 +12,7 @@ from . import config
 @task
 def autoformat(ctx):  # type: ignore
     '''Format project source code to PEP-8 standard.'''
-    args = ['--skip-string-normalization']
-    if check:
-        args.append('--check')
+    # args = ['--skip-string-normalization']
     with ctx.cd(config.webapp_dir):
         ctx.run('isort --atomic **/*.py')
         ctx.run('autopep8 --in-place --recursive .')

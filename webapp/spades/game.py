@@ -12,13 +12,12 @@ from transitions import Machine
 from spades import config
 from spades import exceptions
 from spades.bid import BidMixin
-from spades.book import Book
-from spades.deck import Deck
-from spades.hand import Hand
-from spades.player import Player
+from spades.models.book import Book
+from spades.models.deck import Deck
+from spades.models.hand import Hand
+from spades.models.player import Player
 from spades.turn import PlayerTurns
 
-# logger = logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 log.setLevel(config.loglevel)
 
@@ -88,33 +87,35 @@ class Game(BidMixin, PlayerTurns):
     # statemachine
 
     def check_player_count(self) -> bool:
+        '''Check player count state.'''
         return self.player_count == Game.player_max
 
     def check_bids(self) -> bool:
-        '''Check player bids.'''
+        '''Check player bids state.'''
         count = 0
         for player in self.players:
             if player.bid is not None:
-                log.debug(f"bid: {player.name} {player.bid}")
+                log.debug(f"bid: {player.username} {player.bid}")
                 count += 1
         check = True if count == config.player_max else False
         log.debug(f"check bids are set: {check}")
         return check
 
     def setup_turn(self) -> None:
+        '''Run setup for dealer of next turn.'''
         if not self.__stack:
             self.__stack = Book()
-
-        # TODO this should pick last winner
         if not self.current_turn:
             self.current_turn = self.dealer
         else:
             self.current_turn = self.current_turn % self.player_count
 
     def check_stack(self) -> bool:
+        '''Check stack state.'''
         return True if len(self.stack) == self.player_count else False
 
     def cleanup_turn(self) -> None:
+        '''Cleanup for next turn.'''
         if len(self.stack) == self.player_count:
             self.__award_book()
             self.current_turn = self.stack.winner
@@ -123,15 +124,16 @@ class Game(BidMixin, PlayerTurns):
             print('do something')
 
     def check_handsize(self) -> bool:
+        '''Check if players hand state is empty.'''
         count = 0
         for player in self.players:
             if len(player.hand) == 0:
                 count += 1
-            log.debug(f"handsize: {player.name} {len(player.hand)}")
+            log.debug(f"handsize: {player.username} {len(player.hand)}")
         return count == self.player_count
 
     def check_match(self) -> bool:
-        '''Check if match is finished.'''
+        '''Check if match state is finished.'''
         if self.check_handsize():
             for player in self.players:
                 if len(player.hand) == 0:
@@ -139,20 +141,15 @@ class Game(BidMixin, PlayerTurns):
         return False
 
     def cleanup_match(self) -> None:
-        '''Cleanup bids.'''
-        # print('cleanup match')
+        '''Cleanup for next match.'''
         for player in self.players:
-            print(player.name, len(player.books), player.bid, player.score)
             player.score = True
-            print(player.name, player.score)
         self.current_turn = self.dealer
         self._bid_turn = 0
         self._deck = Deck()
-        # print('cleanup match end')
 
     def check_winner(self) -> bool:
         '''Check if score is a win.'''
-        # print('check winner')
         team1 = 0
         team2 = 0
         for x, player in enumerate(self.players):
@@ -161,14 +158,11 @@ class Game(BidMixin, PlayerTurns):
             else:
                 team2 += player.score
         log.info(f"team1 score: {team1}")
-        print(f"team1 score: {team1}")
         log.info(f"team2 score: {team2}")
-        print(f"team2 score: {team2}")
         if team1 >= config.winning_score:
             return True
         if team2 >= config.winning_score:
             return True
-        # print('check winner end''')
         return False
 
     # statemachine end
@@ -185,7 +179,7 @@ class Game(BidMixin, PlayerTurns):
                 self.__dealer = randrange(self.player_count)
             else:
                 self.__dealer = (self.dealer + 1) % self.player_count
-        log.debug(f"dealer: {self.dealer} {self.players[self.dealer].name}")
+        log.debug(f"dealer: {self.dealer} {self.players[self.dealer].username}")
 
     def deal(self) -> None:
         '''Deal a new game.'''
@@ -208,7 +202,7 @@ class Game(BidMixin, PlayerTurns):
             )
 
     def setup_game(self) -> None:
-        '''Setup a new game of spades.'''
+        '''Run setup for a new game of spades.'''
         self.deal()
         # self.current_turn = 0
 
@@ -228,6 +222,7 @@ class Game(BidMixin, PlayerTurns):
 
     @property
     def stack(self):
+        '''Get the current stack.'''
         return self.__stack
 
     def __award_book(self) -> None:
@@ -235,7 +230,7 @@ class Game(BidMixin, PlayerTurns):
         if self.state == 'cleanup':
             player = self.get_player(self.stack.winner)
             player.books = self.stack
-            log.info(f"LEAD: {self.stack.winner} {player.name}")
+            log.info(f"LEAD: {self.stack.winner} {player.username}")
         else:
             raise exceptions.IllegalTurnException(
                 'cannot award book during this phase'
@@ -261,7 +256,7 @@ class Game(BidMixin, PlayerTurns):
                         raise exceptions.IllegalPlayException(
                             'cards of same suit must may be played'
                         )
-                    log.info(f"play: {player.name} rank: {suit}")
+                    log.info(f"play: {player.username} rank: {suit}")
                 else:
                     raise exceptions.IllegalTurnException(
                         'current turn is already finished'
