@@ -69,6 +69,10 @@ class Config:
         False
     )
 
+    SESSION_COOKIE_SECURE: bool = True
+    SESSION_COOKIE_HTTPONLY: bool = True
+    SESSION_COOKIE_SAMESITE: str = 'Lax'
+
     SECRET_KEY: str = genword(entropy=56, length=128)
     WTF_CSRF_SECRET_KEY: str = genword(entropy=56, length=128)
 
@@ -76,3 +80,6 @@ class Config:
     SESSION_PERMANENT: bool = True
     SESSION_USE_SIGNER: bool = True
     SESSION_REDIS = Redis(**session)
+    SSE_REDIS_URL = "redis://:{p}@{h}:{s}".format(
+        p=session['password'], h=session['host'], s=session['port']
+    )

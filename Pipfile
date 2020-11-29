@@ -44,6 +44,8 @@ argon2-cffi = "*"
 flask-wtf = "*"
 psycopg2-binary = "*"
 flask-sqlalchemy = "*"
+flask-sse = "*"
+gevent = "*"
 
 [requires]
 python_version = "3.8"

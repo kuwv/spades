@@ -7,6 +7,7 @@
     <title>Spades</title>
     <link rel="stylesheet" href="/static/css/pure-min.css">
     <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/cards.css">
   </head>
 
   <body>
@@ -14,13 +15,18 @@
       <div class="custom-menu-wrapper">
         <div class="pure-menu custom-menu custom-menu-top">
           <a class="pure-menu-heading custom-menu-brand" href="{{ url_for('main.index') }}">
-            Spades
+            Lobby
           </a>
         </div>
         <div class="pure-menu pure-menu-horizontal pure-menu-scrollable custom-menu custom-menu-bottom custom-menu-tucked" id="game-account">
           <div class="custom-menu-screen"></div>
             <ul class="pure-menu-list">
               {% if current_user.is_authenticated %}
+                <li class="pure-menu-item">
+                  <a href="{{ url_for('main.game') }}" class="pure-menu-link">
+                    Spades
+                  </a>
+                </li>
                 <li class="pure-menu-item">
                   <a href="{{ url_for('auth.logout') }}" class="pure-menu-link">
                     Logout
@@ -47,12 +53,14 @@
     <!-- div class="content-wrapper">
       <div class="content" -->
     <div class="container">
+      <!--
       {% for message in get_flashed_messages() %}
         <div class="alert alert-warning">
           <button type="button" class="close" data-dismiss="alert">&times;</button>
           {{ message }}
         </div>
       {% endfor %}
+      -->
       {% block content %}
       {% endblock %}
     </div>
