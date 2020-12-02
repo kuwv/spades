@@ -21,7 +21,7 @@ game.add_player(Player('Kim'))
 def generate_bid(g: Game):
     turn = g.current_bidder()
     player = g.get_player(turn)
-    bid = len(player.hand.list_suit('Spades'))
+    bid = len(player.hand.list_suit('S'))
     g.accept_bid(turn, bid)
     assert player.bid == bid
 

@@ -68,4 +68,4 @@ class PlayerTurns:
 
     def get_player_by_username(self, username: str) -> Optional[Player]:
         '''Get current player by username.'''
-        return next((p for p in self.__players if p.username == username), None)
+        return next((p for p in self.players if p.username == username), None)

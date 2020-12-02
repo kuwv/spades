@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src='/static/js/jquery.min.js'></script>
+<script src='/static/js/cards.min.js'></script>
+
+<div id='pile' class='pile-container'></div>
+<div id='player-main' class='hand hhand-compact hand-main'></div>
+<div id='player-left' class='hand vhand-compact hand-left'></div>
+<div id='player-across' class='hand hhand-compact hand-across'></div>
+<div id='player-right' class='hand vhand-compact hand-right'></div>
+
+<script>
+  // number of players
+  var players = {{ data | tojson }}
+
+  // get event source stream
+  var eventSource = new EventSource("{{ url_for('sse.stream') }}");
+
+  // add card to page
+  function addCard(selector, name='RED_BACK', cls='card') {
+    $(selector).append(
+      $('<img>', {
+        class: cls, src: `/static/img/cards/${name}.svg`
+      })
+    );
+  }
+
+  // abstract player hands
+  $.each(players, function(_, player) {
+    if('hand' in player) {
+      // check player turn
+      if(player.active) {
+        $('#player-main').addClass('active-hand');
+      };
+      // present users hand
+      $.each(JSON.parse(player.hand), function(_, card) {
+        addCard(selector='#player-main', name=`${card.rank}${card.suit}`);
+      });
+    } else {
+      for(var i = 0; i < player.card_count; i++) {
+        // turn cards for players sitting on side
+        var cls = 'card';
+        if (player.seat == 'left' || player.seat == 'right') {
+          cls = `${cls} rotate-card`;
+        }
+        // abstract other player hands
+        addCard(`#player-${player.seat}`, 'RED_BACK', cls);
+      }
+    }
+  });
+
+  // retrieve events
+  eventSource.addEventListener('play-card', p => {
+    var play = JSON.parse(p.data);
+    var cls=`card pile-card-${play.seat}`;
+    if (play.seat == 'left' || play.seat == 'right') {
+      cls=`${cls} rotate-card`
+    }
+    addCard('#pile', `${play.rank}${play.suit}`, cls);
+  }, false);
+
+  console.log(cards.cid)
+</script>
+{% endblock %}

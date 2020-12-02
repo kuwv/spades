@@ -23,8 +23,13 @@
             <ul class="pure-menu-list">
               {% if current_user.is_authenticated %}
                 <li class="pure-menu-item">
-                  <a href="{{ url_for('main.game') }}" class="pure-menu-link">
+                  <a href="{{ url_for('main.gameboard') }}" class="pure-menu-link">
                     Spades
+                  </a>
+                </li>
+                <li class="pure-menu-item">
+                  <a href="{{ url_for('auth.logout') }}" class="pure-menu-link">
+                    {{ current_user.username }}
                   </a>
                 </li>
                 <li class="pure-menu-item">

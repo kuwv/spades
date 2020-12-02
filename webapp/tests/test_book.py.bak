@@ -14,21 +14,21 @@ from spades.models.book import Book
 def test_book():
     '''Test card in book.'''
     book = Book()
-    book.add_trick(0, Card('K', 'Spades'))
-    assert Card('K', 'Spades') in book
+    book.add_trick(0, Card('K', 'S'))
+    assert Card('K', 'S') in book
 
 
 def test_book_trump():
     '''Test high card in book.'''
     book = Book()
-    book.add_trick(1, Card('2', 'Diamonds'))
-    book.add_trick(2, Card('10', 'Diamonds'))
-    assert book.trump == Card('10', 'Diamonds')
+    book.add_trick(1, Card('2', 'D'))
+    book.add_trick(2, Card('10', 'D'))
+    assert book.trump == Card('10', 'D')
 
 
 def test_book_max():
     '''Test maximum allowed cards in book.'''
     book = Book(1)
     with pytest.raises(exceptions.MaxBookSizeException):
-        book.add_trick(3, Card('2', 'Hearts'))
-        book.add_trick(0, Card('3', 'Hearts'))
+        book.add_trick(3, Card('2', 'H'))
+        book.add_trick(0, Card('3', 'H'))

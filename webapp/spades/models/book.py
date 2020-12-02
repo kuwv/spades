@@ -61,7 +61,7 @@ class Book:
                 self.__lead_player = player_id
                 self.__suit = card.suit
                 self.__trump = card
-            elif self.__suit == card.suit or card.suit == 'Spades':
+            elif self.__suit == card.suit or card.suit == 'S':
                 if self.__trump < card:
                     self.__lead_player = player_id
                     self.__trump = card

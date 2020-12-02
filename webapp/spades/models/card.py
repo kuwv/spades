@@ -3,11 +3,21 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide card package.'''
 
+import json
+
 from spades.exceptions import (
     InvalidComparisonCardException,
     InvalidRankCardException,
     InvalidSuitCardException
 )
+
+
+class CardEncoder(json.JSONEncoder):
+    '''Encode cards into JSON.'''
+
+    def default(self, o):
+        '''Provide default card encoder implementation.'''
+        return {'rank': o.rank, 'suit': o.suit}
 
 
 class Card:
@@ -16,7 +26,7 @@ class Card:
     ranks: tuple = (
         '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'
     )
-    suits: tuple = ('Clubs', 'Diamonds', 'Hearts', 'Spades')
+    suits: tuple = ('C', 'D', 'H', 'S')
 
     def __init__(self, rank: str, suit: str) -> None:
         '''Initialize card.'''
@@ -54,9 +64,9 @@ class Card:
             return True
         if self.suit == other.suit:
             return Card.ranks.index(self.rank) > Card.ranks.index(other.rank)
-        elif self.suit == 'Spades':
+        elif self.suit == 'S':
             return True
-        elif other.suit == 'Spades':
+        elif other.suit == 'S':
             return False
         else:
             raise InvalidComparisonCardException(

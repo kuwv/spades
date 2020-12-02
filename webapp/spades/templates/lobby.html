@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="game-login">
+  <form class="pure-form pure-form-aligned" method="POST" action="/login">
+    {{ form.csrf_token }}
+    <fieldset>
+      <div class="pure-controls">
+        <p>1. see win/loss statistics of themselves and others
+           2. see game moves of completed games
+           3. start a new game
+           4. join and existing game that needs players
+        </p>
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}

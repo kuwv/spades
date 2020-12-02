@@ -7,7 +7,7 @@ from spades.models.player import Hand
 
 def test_hand() -> None:
     hand = Hand()
-    hand.add_card(Card('A', 'Spades'))
-    card = hand.pull_card('A', 'Spades')
+    hand.add_card(Card('A', 'S'))
+    card = hand.pull_card('A', 'S')
     assert card.rank == 'A'
-    assert card.suit == 'Spades'
+    assert card.suit == 'S'

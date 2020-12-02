@@ -9,10 +9,9 @@ from spades import exceptions
 from spades.models.book import Book
 from spades.models.card import Card
 from spades.models.hand import Hand
-from spades.models.user import User
 
 
-class Player(User):
+class Player:
     '''Provide player object.'''
 
     def __init__(self, username: str) -> None:
@@ -22,6 +21,11 @@ class Player(User):
         self.__bid: Optional[int] = None
         self.__bags: int = 0
         self.__score: int = 0
+        self.__username = username
+
+    @property
+    def username(self) -> str:
+        return self.__username
 
     @property
     def score(self) -> int:

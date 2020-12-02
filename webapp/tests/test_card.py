@@ -15,29 +15,29 @@ from spades.models.card import Card
 
 def test_card() -> None:
     '''Test card object.'''
-    card = Card('K', 'Spades')
+    card = Card('K', 'S')
     assert card.rank == 'K'
-    assert card.suit == 'Spades'
+    assert card.suit == 'S'
 
 
 def test_card_greater_spades() -> None:
     '''Test card value comparison.'''
-    two_clubs = Card('2', 'Clubs')
-    ace_spades = Card('A', 'Spades')
+    two_clubs = Card('2', 'C')
+    ace_spades = Card('A', 'S')
     assert ace_spades > two_clubs
 
 
 def test_card_greater_suit() -> None:
     '''Test card value comparison.'''
-    ten_hearts = Card('10', 'Hearts')
-    jack_hearts = Card('J', 'Hearts')
+    ten_hearts = Card('10', 'H')
+    jack_hearts = Card('J', 'H')
     assert jack_hearts > ten_hearts
 
 
 def test_card_rank_error() -> None:
     '''Tst card rank error.'''
     with pytest.raises(InvalidRankCardException):
-        Card('blah', 'Hearts')
+        Card('blah', 'H')
 
 
 def test_card_suit_error() -> None:
@@ -49,4 +49,4 @@ def test_card_suit_error() -> None:
 def test_card_comparison_error() -> None:
     '''Test card comparison error.'''
     with pytest.raises(InvalidComparisonCardException):
-        Card('10', 'Hearts') > Card('10', 'Clubs')
+        Card('10', 'H') > Card('10', 'C')

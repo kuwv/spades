@@ -8,6 +8,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
+from flask_sse import sse
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -39,6 +40,7 @@ def create_app() -> Flask:
 
         app.register_blueprint(auth)
         app.register_blueprint(main)
+        app.register_blueprint(sse, url_prefix='/stream')
 
         db.create_all()
         return app

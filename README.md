@@ -11,8 +11,9 @@ SWE-681 Final Project - Spades
 ## Prerequisites
 
 - Docker
-- Python 3.8
+- docker-compose
 - mkcert
+- Python 3.8
 
 ## Install
 
@@ -21,3 +22,12 @@ pip install pipenv
 pipenv shell
 pipenv install --dev
 ```
+
+## Manual Install
+
+...
+
+## Credits
+
+Chris Aguilar for Vector Playing Cards
+Richard Schneider for cardJS

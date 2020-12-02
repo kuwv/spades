@@ -69,9 +69,11 @@ class Game(BidMixin, PlayerTurns):
         }
     ]
 
-    def __init__(self) -> None:
+    def __init__(self, player_count: Optional[int] = None) -> None:
         '''Initialize game.'''
         super().__init__()
+        if player_count:
+            Game.player_max = player_count
         self.__dealer: Optional[int] = None
         self._bid_turn: int = 0
         self._deck: Deck = Deck()

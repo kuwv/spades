@@ -3,10 +3,13 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide hand capabilities.'''
 
+import json
 from typing import List
 
+# from flask import session
+
 from spades import exceptions
-from spades.models.card import Card
+from spades.models.card import Card, CardEncoder
 
 
 class Hand:
@@ -21,9 +24,7 @@ class Hand:
 
     def __repr__(self) -> str:
         '''Return string representation of card.'''
-        return (
-            f"{self.__class__.__name__}(hand={self.__hand!r})"
-        )
+        return f"{self.__class__.__name__}(hand={self.__hand!r})"
 
     def __len__(self) -> int:
         '''Return number of items.'''
@@ -42,6 +43,11 @@ class Hand:
         self.__count += 1
         return card
 
+    @property
+    def to_json(self):
+        '''Get json instance.'''
+        return(json.dumps(self.__hand, cls=CardEncoder))
+
     def list_suit(self, suit: str) -> List[str]:
         '''List items of a suit.'''
         return [c.rank for c in self.__hand if c.suit == suit]
@@ -53,7 +59,7 @@ class Hand:
     def playable(self, suit: str = None) -> List[Card]:
         '''Get all playable cards.'''
         if not suit and not Hand.spades_broken:
-            hand = [c for c in self.__hand if c.suit != 'Spades']
+            hand = [c for c in self.__hand if c.suit != 'S']
             return self.__hand if hand == [] else hand
         elif suit and len(self.get_suit(suit)) > 0:
             return self.get_suit(suit)
@@ -77,7 +83,7 @@ class Hand:
         selection = Card(rank, suit)
         for card in self.__hand:
             if selection == card:
-                if selection.suit == 'Spades':
+                if selection.suit == 'S':
                     Hand.spades_broken = True
                 self.__hand.remove(card)
                 return card
