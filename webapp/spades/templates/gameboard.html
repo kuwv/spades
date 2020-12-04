@@ -13,6 +13,15 @@
   // number of players
   var players = {{ data | tojson }}
 
+  // determine seats
+  if (players.length === 4) {
+    const seats = ['main', 'left', 'across', 'right'];
+  } else if (players.length === 3) {
+    const seats = ['main', 'left', 'right'];
+  } else {
+    const seats = ['main', 'across'];
+  }
+
   // get event source stream
   var eventSource = new EventSource("{{ url_for('sse.stream') }}");
 
@@ -23,6 +32,21 @@
         class: cls, src: `/static/img/cards/${name}.svg`
       })
     );
+  }
+
+  // get player turn
+  function getPlayerTurn(username) {
+    console.log(username);
+    var turn = players.findIndex((x) => x === username);
+    console.log(turn);
+    return turn
+  }
+
+  // get player seat by name
+  function getPlayerSeat(username) {
+    return seats[((
+       getPlayerTurn(username) + getPlayerTurn("{{ current_user.username }}")
+    ) % players.length)];
   }
 
   // abstract player hands
@@ -52,13 +76,24 @@
   // retrieve events
   eventSource.addEventListener('play-card', p => {
     var play = JSON.parse(p.data);
-    var cls=`card pile-card-${play.seat}`;
-    if (play.seat == 'left' || play.seat == 'right') {
+    var seat = getPlayerSeat(play.user);
+    var cls=`card pile-card-${seat}`;
+    if (seat == 'left' || seat == 'right') {
       cls=`${cls} rotate-card`
     }
     addCard('#pile', `${play.rank}${play.suit}`, cls);
   }, false);
 
-  console.log(cards.cid)
+  cards.playCard = function($card) {
+    play = cards.cid($card);
+    cards.remove(play);
+    $.post('/play', {
+      card_played: {
+        'user': "{{ current_user.username }}",
+        'rank': play.charAt(0),
+        'suit': play.charAt(1)
+      }
+    });
+  }
 </script>
 {% endblock %}
