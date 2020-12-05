@@ -1,7 +1,5 @@
 '''Provide interface for game.'''
 
-import json
-# import time
 from typing import Union
 
 from flask import Blueprint, render_template, request
@@ -46,30 +44,14 @@ def lobby() -> str:
     return render_template('lobby.html')
 
 
-# @main.route('/test')
-# def test() -> str:
-#     '''Test sse.'''
-#     plays = [
-#       {
-#         'seat': 'main', 'rank': 2, 'suit': 'H'
-#       }, {
-#         'seat': 'left', 'rank': 4, 'suit': 'H'
-#       }, {
-#         'seat': 'across', 'rank': 'K', 'suit': 'H'
-#       }, {
-#         'seat': 'right', 'rank': 2, 'suit': 'S'
-#       }
-#     ]
-#
-#     for play in plays:
-#         time.sleep(10)
-#         sse.publish(play, type='play-card')
-#     return render_template('index.html')
-
-
 @main.route('/play', methods=['POST'])
+@login_required
 def play():
-    card_played = json.loads(request.form['card_played'])[0]
+    print('playing a card')
+    user = request.form['user']
+    rank = request.form['rank']
+    suit = request.form['suit']
+    card_played = {'user': user, 'rank': rank, 'suit': suit}
     sse.publish(card_played, type='play-card')
     return card_played
 
@@ -107,7 +89,7 @@ def gameboard() -> Union[Response, str]:
 
     players = [
         {
-            'name': 'Jesse',
+            'name': 'test',
             'seat': 'main',
             'active': 'true',
             'hand': player.hand.to_json

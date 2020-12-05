@@ -29,7 +29,7 @@ def test_card_greater_spades() -> None:
 
 def test_card_greater_suit() -> None:
     '''Test card value comparison.'''
-    ten_hearts = Card('10', 'H')
+    ten_hearts = Card('T', 'H')
     jack_hearts = Card('J', 'H')
     assert jack_hearts > ten_hearts
 
@@ -43,10 +43,10 @@ def test_card_rank_error() -> None:
 def test_card_suit_error() -> None:
     '''Test card suit error.'''
     with pytest.raises(InvalidSuitCardException):
-        Card('10', 'blah')
+        Card('T', 'blah')
 
 
 def test_card_comparison_error() -> None:
     '''Test card comparison error.'''
     with pytest.raises(InvalidComparisonCardException):
-        Card('10', 'H') > Card('10', 'C')
+        Card('T', 'H') > Card('T', 'C')

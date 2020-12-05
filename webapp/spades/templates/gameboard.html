@@ -15,11 +15,11 @@
 
   // determine seats
   if (players.length === 4) {
-    const seats = ['main', 'left', 'across', 'right'];
+    var seats = ['main', 'left', 'across', 'right'];
   } else if (players.length === 3) {
-    const seats = ['main', 'left', 'right'];
+    var seats = ['main', 'left', 'right'];
   } else {
-    const seats = ['main', 'across'];
+    var seats = ['main', 'across'];
   }
 
   // get event source stream
@@ -36,17 +36,18 @@
 
   // get player turn
   function getPlayerTurn(username) {
-    console.log(username);
-    var turn = players.findIndex((x) => x === username);
-    console.log(turn);
-    return turn
+    var turn = players.findIndex((x) => x.name == username);
+    console.log('current', username, turn);
+    return turn;
   }
 
   // get player seat by name
   function getPlayerSeat(username) {
-    return seats[((
-       getPlayerTurn(username) + getPlayerTurn("{{ current_user.username }}")
-    ) % players.length)];
+    var shift = getPlayerTurn("{{ current_user.username }}") - players.length;
+    console.log('shift', shift);
+    var turn = (getPlayerTurn(username) + shift) % players.length;
+    console.log('turn', turn);
+    return seats[turn];
   }
 
   // abstract player hands
@@ -58,7 +59,7 @@
       };
       // present users hand
       $.each(JSON.parse(player.hand), function(_, card) {
-        addCard(selector='#player-main', name=`${card.rank}${card.suit}`);
+        addCard(selector='#player-main', name=card.rank + card.suit);
       });
     } else {
       for(var i = 0; i < player.card_count; i++) {
@@ -77,22 +78,24 @@
   eventSource.addEventListener('play-card', p => {
     var play = JSON.parse(p.data);
     var seat = getPlayerSeat(play.user);
+    console.log('seat', seat);
     var cls=`card pile-card-${seat}`;
     if (seat == 'left' || seat == 'right') {
-      cls=`${cls} rotate-card`
+      cls=`${cls} rotate-card`;
     }
     addCard('#pile', `${play.rank}${play.suit}`, cls);
   }, false);
 
+  // retrieve played card
   cards.playCard = function($card) {
     play = cards.cid($card);
-    cards.remove(play);
+    console.log('card', $card);
+    console.log('card', play);
+    cards.remove($card);
     $.post('/play', {
-      card_played: {
-        'user': "{{ current_user.username }}",
-        'rank': play.charAt(0),
-        'suit': play.charAt(1)
-      }
+      user: "{{ current_user.username }}",
+      rank: play.slice(0, -1),
+      suit: play.slice(-1)
     });
   }
 </script>
