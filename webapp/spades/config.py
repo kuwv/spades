@@ -25,7 +25,7 @@ def set_player_max(count: int) -> None:
 # db settings
 db_type: str = os.getenv('DB_TYPE', 'postgres')
 db_host: str = os.getenv('POSTGRESQL_HOST', 'localhost')
-db_port: int = os.getenv('POSTGRESQL_PORT', 5432)
+db_port: int = int(os.getenv('POSTGRESQL_PORT', 5432))
 db_user: str = os.getenv('POSTGRESQL_USER', 'spades')
 db_pass: str = os.getenv('POSTGRESQL_PASSWORD', 'password')
 db_name: str = os.getenv('POSTGRESQL_DATABASE', 'spades')
@@ -70,10 +70,9 @@ class Config:
         'SQLALCHEMY_DATABASE_URI',
         f"{db_type}://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
     )
-    SQLALCHEMY_ECHO: bool = os.getenv('SQLALCHEMY_ECHO', True)
-    SQLALCHEMY_TRACK_MODIFICATIONS: bool = os.getenv(
-        'SQLALCHEMY_TRACK_MODIFICATIONS',
-        False
+    SQLALCHEMY_ECHO: bool = bool(os.getenv('SQLALCHEMY_ECHO', True))
+    SQLALCHEMY_TRACK_MODIFICATIONS: bool = bool(
+        os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS', False)
     )
 
     SESSION_COOKIE_SECURE: bool = True

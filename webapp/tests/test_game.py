@@ -8,7 +8,7 @@ import pytest
 
 from spades import exceptions
 from spades.game import Game
-from spades.models.player import Player
+from spades.game.models.player import Player
 
 
 player_count = 2

@@ -4,8 +4,8 @@
 # license: Apache 2.0, see LICENSE for more details.
 '''Provide tests for deck.'''
 
-from spades.models.card import Card
-from spades.models.deck import Deck
+from spades.game.models.card import Card
+from spades.game.models.deck import Deck
 
 
 def test_deck():

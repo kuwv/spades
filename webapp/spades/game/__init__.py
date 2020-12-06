@@ -10,12 +10,12 @@ from typing import List, Optional
 from transitions import Machine
 
 from spades import config, exceptions
-from spades.bid import BidMixin
-from spades.models.book import Book
-from spades.models.deck import Deck
-from spades.models.hand import Hand
-from spades.models.player import Player
-from spades.turn import PlayerTurns
+from spades.game.bid import BidMixin
+from spades.game.models.book import Book
+from spades.game.models.deck import Deck
+from spades.game.models.hand import Hand
+from spades.game.models.player import Player
+from spades.game.turn import PlayerTurns
 
 log = logging.getLogger(__name__)
 log.setLevel(config.loglevel)

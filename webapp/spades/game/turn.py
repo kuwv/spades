@@ -8,7 +8,7 @@ from random import randrange
 from typing import List, Optional
 
 from spades import config, exceptions
-from spades.models.player import Player
+from spades.game.models.player import Player
 
 
 class PlayerTurns:

@@ -5,7 +5,7 @@
 
 from random import randrange, shuffle
 
-from spades.models.card import Card
+from spades.game.models.card import Card
 
 
 class Deck:

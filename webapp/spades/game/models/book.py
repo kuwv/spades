@@ -5,9 +5,8 @@
 
 from typing import List, Optional
 
-from spades import config
-from spades import exceptions
-from spades.models.card import Card
+from spades import config, exceptions
+from spades.game.models.card import Card
 
 
 class Book:

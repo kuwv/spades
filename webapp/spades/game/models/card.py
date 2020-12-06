@@ -5,11 +5,7 @@
 
 import json
 
-from spades.exceptions import (
-    InvalidComparisonCardException,
-    InvalidRankCardException,
-    InvalidSuitCardException
-)
+from spades import exceptions
 
 
 class CardEncoder(json.JSONEncoder):
@@ -33,12 +29,16 @@ class Card:
         if rank in Card.ranks:
             self.rank = rank
         else:
-            raise InvalidRankCardException('except on incorrect rank')
+            raise exceptions.InvalidRankCardException(
+                'except on incorrect rank'
+            )
 
         if suit.lower().capitalize() in Card.suits:
             self.suit = suit.lower().capitalize()
         else:
-            raise InvalidSuitCardException('except on incorrect suit')
+            raise exceptions.InvalidSuitCardException(
+                'except on incorrect suit'
+            )
 
     def __repr__(self) -> str:
         '''Return string representation of card.'''
@@ -69,7 +69,7 @@ class Card:
         elif other.suit == 'S':
             return False
         else:
-            raise InvalidComparisonCardException(
+            raise exceptions.InvalidComparisonCardException(
                 'except for invalid comparison'
             )
             # return Card.suits.index(self.suit) > Card.suits.index(other.suit)

@@ -9,7 +9,7 @@ from typing import List
 # from flask import session
 
 from spades import exceptions
-from spades.models.card import Card, CardEncoder
+from spades.game.models.card import Card, CardEncoder
 
 
 class Hand:

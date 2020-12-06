@@ -1,9 +1,9 @@
 '''Provide interface for game.'''
 
-from typing import List, Union
+from typing import Any, Dict, List, Union
 
 import flask
-from flask import Blueprint, url_for
+from flask import Blueprint, session, url_for
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from flask_sse import sse
@@ -13,13 +13,13 @@ from wtforms import SubmitField
 
 # from spades import exceptions
 from spades.game import Game
-from spades.models.player import Player
+from spades.game.models.player import Player
 
 main = Blueprint('main', __name__)
 
 mock_names: List[str] = ['John']
 games: List[Game] = []
-game = Game()
+game_state: Game = Game()
 
 
 class LobbyForm(FlaskForm):
@@ -31,7 +31,10 @@ def __create_game() -> None:
     '''Create a new game.'''
     print('no game found - creating one')
     game = Game()
-    games.append(game.add_player(Player(current_user.username)))
+    game.add_player(Player(current_user.username))
+    games.append(game)
+    session['game'] = len(games) - 1
+    print('game index', session['game'])
 
 
 @main.route('/')
@@ -42,26 +45,32 @@ def index() -> str:
 
 @main.route('/lobby', methods=['GET', 'POST'])
 @login_required
-def lobby() -> str:
+def lobby() -> Union[Response, str]:
     '''Provide lobby to coordinate new games.'''
     form = LobbyForm()
     if form.validate_on_submit():
         if form.join_game.data:
             print('join game')
-            for game in games:
-                if hasattr(game, 'state') and game.state == 'waiting':
-                    if not game.get_player_by_username(current_user.username):
-                        game.add_player(Player(current_user.username))
-                        if game.check_player_count():
-                            game.start_game()
-                        break
-                else:
-                    __create_game()
+            if games == []:
+                __create_game()
+            else:
+                for num, game in enumerate(games):
+                    if hasattr(game, 'state') and game.state == 'waiting':
+                        if not game.get_player_by_username(
+                            current_user.username
+                        ):
+                            game.add_player(Player(current_user.username))
+                            session['game'] = num
+                            if game.check_player_count():
+                                game.start_game()
+                            break
+                    else:
+                        __create_game()
+            print('games', games)
             return flask.redirect(url_for('main.gameboard'))
         if form.start_game.data:
             print('start game')
             __create_game()
-    print('games', games)
     if games != []:
         return flask.render_template('lobby.html', form=form, games=mock_names)
     return flask.render_template('lobby.html', form=form)
@@ -69,7 +78,7 @@ def lobby() -> str:
 
 @main.route('/play', methods=['POST'])
 @login_required
-def play():
+def play() -> Dict[str, Any]:
     '''Publish card play for user.'''
     username = flask.request.form['username']
     rank = flask.request.form['rank']
@@ -85,9 +94,10 @@ def play():
 def gameboard() -> Union[Response, str]:
     '''Provide gameboard.'''
     # Setup mock players - less than four fail
-    for player in mock_names:
-        if not game.get_player_by_username(player):
-            game.add_player(Player(player))
+    game = games[session['game']]
+    for player_name in mock_names:
+        if not game.get_player_by_username(player_name):
+            game.add_player(Player(player_name))
     # mock end
 
     player = game.get_player_by_username(current_user.username)
@@ -98,7 +108,6 @@ def gameboard() -> Union[Response, str]:
             f"{game.get_player_by_username(current_user.username).username}"
         )
 
-    print('players', game.players)
     if game.check_player_count():
         if game.state == 'waiting':
             game.start_game()

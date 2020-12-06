@@ -6,9 +6,9 @@
 from typing import Optional, Set
 
 from spades import exceptions
-from spades.models.book import Book
-from spades.models.card import Card
-from spades.models.hand import Hand
+from spades.game.models.book import Book
+from spades.game.models.card import Card
+from spades.game.models.hand import Hand
 
 
 class Player:
