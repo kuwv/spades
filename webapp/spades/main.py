@@ -17,7 +17,7 @@ from spades.models.player import Player
 
 main = Blueprint('main', __name__)
 
-mock_names: List[str] = ['John', 'Edgar', 'Jill']
+mock_names: List[str] = ['John']
 games: List[Game] = []
 game = Game()
 
@@ -61,6 +61,7 @@ def lobby() -> str:
         if form.start_game.data:
             print('start game')
             __create_game()
+    print('games', games)
     if games != []:
         return flask.render_template('lobby.html', form=form, games=mock_names)
     return flask.render_template('lobby.html', form=form)
@@ -117,14 +118,6 @@ def gameboard() -> Union[Response, str]:
             'hand': player.hand.to_json
         }, {
             'username': 'John',
-            'active': 'false',
-            'card_count': 13
-        }, {
-            'username': 'Edgar',
-            'active': 'false',
-            'card_count': 13
-        }, {
-            'username': 'Jill',
             'active': 'false',
             'card_count': 13
         },

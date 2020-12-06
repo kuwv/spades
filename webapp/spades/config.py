@@ -9,11 +9,11 @@ from passlib.pwd import genword
 from redis import Redis
 
 # logging
-loglevel: str = os.getenv('LOGLEVEL', 'INFO')
+loglevel: str = os.getenv('LOGLEVEL', 'INFO').upper()
 
 # spades settings
 player_max: int = 2
-winning_score: int = 100
+winning_score: int = 50
 
 
 def set_player_max(count: int) -> None:

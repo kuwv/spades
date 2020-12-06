@@ -6,21 +6,24 @@
 
 import pytest
 
-from spades import config, exceptions
+from spades import exceptions
 from spades.game import Game
 from spades.models.player import Player
 
 
-game = Game(4)
+player_count = 2
+game = Game(player_count)
 game.add_player(Player('Jim'))
 game.add_player(Player('Mike'))
-game.add_player(Player('Jill'))
-game.add_player(Player('Kim'))
+# game.add_player(Player('Jill'))
+# game.add_player(Player('Kim'))
 
 
 def generate_bid(g: Game):
     turn = g.current_bidder()
+    # print('turn:', turn)
     player = g.get_player(turn)
+    # print(player.hand)
     bid = len(player.hand.list_suit('S'))
     g.accept_bid(turn, bid)
     assert player.bid == bid
@@ -58,10 +61,10 @@ def test_game_states() -> None:
         # ensure all bidders have been accounted for
         game.start_turn()
         assert game.state != 'playing'
-        # print(f"{game.state} != playing")
+        print(f"{game.state} != playing")
 
         # TODO: switch to turn iterator
-        for _ in range(0, 4):
+        for _ in range(0, player_count):
             generate_bid(game)
 
         # check that no other bid can be made
@@ -78,10 +81,10 @@ def test_game_states() -> None:
             assert game.state != 'cleanup'
 
             # TODO: switch to turn iterator
-            for x in [1, 2, 3, 4]:
+            for x in range(0, player_count):
                 generate_trick(game)
 
-                if x == 4 and len(
+                if x == player_count and len(
                     game.get_player(game.current_turn).hand
                 ) > 0:
                     with pytest.raises(exceptions.IllegalTurnException):

@@ -7,8 +7,7 @@ from random import randrange
 
 from typing import List, Optional
 
-from spades import config
-from spades import exceptions
+from spades import config, exceptions
 from spades.models.player import Player
 
 

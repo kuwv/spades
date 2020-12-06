@@ -74,17 +74,19 @@ def register() -> Union[Response, str]:
 @auth.route('/login', methods=['GET', 'POST'])
 def login() -> Union[Response, str]:
     '''Provide user login.'''
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user)
-            flask.flash('successfull login')
-            return flask.redirect(url_for('main.lobby'))
-        else:
-            flask.flash('Error: invalid credentials')
-            return flask.redirect(url_for('auth.login'))
-    return flask.render_template('login.html', form=form)
+    if not current_user.is_authenticated:
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=form.username.data).first()
+            if user and user.check_password(form.password.data):
+                login_user(user)
+                flask.flash('successfull login')
+                return flask.redirect(url_for('main.lobby'))
+            else:
+                flask.flash('Error: invalid credentials')
+                return flask.redirect(url_for('auth.login'))
+        return flask.render_template('login.html', form=form)
+    return flask.redirect(url_for('main.lobby'))
 
 
 @auth.route('/logout')

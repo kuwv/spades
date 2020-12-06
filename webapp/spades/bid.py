@@ -2,8 +2,7 @@
 
 from typing import Optional
 
-from spades import config
-from spades import exceptions
+from spades import config, exceptions
 
 
 class BidMixin:
@@ -32,6 +31,7 @@ class BidMixin:
 
     def accept_bid(self, player_id: int, bid: int) -> bool:
         '''Accpet bids from players.'''
+        print('bid', self._bid_turn, config.player_max)
         if self.state == 'bidding':
             if player_id == self.current_bidder():
                 if self._bid_turn < config.player_max:

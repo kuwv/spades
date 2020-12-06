@@ -193,13 +193,8 @@ class Game(BidMixin, PlayerTurns):
                     # TODO: if max hand less than 13
                     card_piles[turn % len(card_piles)].add_card(card)
                     turn += 1
-                for num, player in enumerate(self.players):
-                    if config.player_max == 4:
-                        player.hand = card_piles.pop()
-                    elif config.player_max == 3 and num != 3:
-                        player.hand = card_piles.pop()
-                    elif config.player_max == 2 and num != 1 and num != 3:
-                        player.hand = card_piles.pop()
+                for player in self.players:
+                    player.hand = card_piles.pop()
             else:
                 raise exceptions.InvalidPlayerException('no players in game')
         else:
