@@ -235,6 +235,7 @@ class Game(BidMixin, PlayerTurns):
         '''Award book to player with trump or highest trick.'''
         if self.state == 'cleanup':
             player = self.get_player(self.stack.winner)
+            # TODO: append stack
             player.books = self.stack
             log.info(f"LEAD: {self.stack.winner} {player.username}")
         else:

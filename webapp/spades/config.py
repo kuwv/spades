@@ -12,7 +12,7 @@ from redis import Redis
 loglevel: str = os.getenv('LOGLEVEL', 'INFO')
 
 # spades settings
-player_max: int = 4
+player_max: int = 2
 winning_score: int = 100
 
 

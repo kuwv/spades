@@ -38,8 +38,6 @@ def generate_trick(g: Game):
 
 def test_game_states() -> None:
     '''Test game states.'''
-    print('player max', config.player_max)
-
     # test adding over maximum number of players.
     with pytest.raises(exceptions.InvalidPlayerException):
         game.add_player(Player('Jackson'))
@@ -63,7 +61,7 @@ def test_game_states() -> None:
         # print(f"{game.state} != playing")
 
         # TODO: switch to turn iterator
-        for _ in [1, 2, 3, 4]:
+        for _ in range(0, 4):
             generate_bid(game)
 
         # check that no other bid can be made

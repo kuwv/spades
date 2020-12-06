@@ -13,12 +13,9 @@ from spades.models.card import Card
 class Book:
     '''Provide book object.'''
 
-    card_max = config.player_max
-
-    def __init__(self, card_max: Optional[int] = None) -> None:
+    def __init__(self) -> None:
         '''Initialize book.'''
-        if card_max:
-            Book.card_max = card_max
+        self.card_max = config.player_max
         self.__stack: List[Card] = []
         self.__trump: Optional[Card] = None
         self.__suit = None
@@ -56,7 +53,7 @@ class Book:
     def add_trick(self, player_id: int, card: Card) -> None:
         '''Add card to book.'''
         # print('trick', player_id, card)
-        if len(self.__stack) < Book.card_max:
+        if len(self.__stack) < self.card_max:
             if self.__stack == []:
                 self.__lead_player = player_id
                 self.__suit = card.suit
