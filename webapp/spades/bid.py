@@ -20,7 +20,7 @@ class BidMixin:
     @property
     def starting_bidder(self) -> int:
         '''Get current bidder.'''
-        return (self.dealer + 1) % self.player_count
+        return (self.dealer + 1) % config.player_max
 
     def current_bidder(self) -> int:
         '''Get identity of current bidder.'''
@@ -35,7 +35,6 @@ class BidMixin:
         if self.state == 'bidding':
             if player_id == self.current_bidder():
                 if self._bid_turn < config.player_max:
-                    print(self.current_bidder_username(player_id), bid)
                     self.players[player_id].bid = bid
                     self._bid_turn += 1
                 else:

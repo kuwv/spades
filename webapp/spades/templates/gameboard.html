@@ -26,32 +26,33 @@
   var eventSource = new EventSource("{{ url_for('sse.stream') }}");
 
   // add card to page
-  function addCard(selector, name='RED_BACK', cls='card') {
+  function addCard(selector, cardname='RED_BACK', cls='card') {
     $(selector).append(
       $('<img>', {
-        class: cls, src: `/static/img/cards/${name}.svg`
+        class: cls, src: `/static/img/cards/${cardname}.svg`
       })
     );
   }
 
   // get player turn
   function getPlayerTurn(username) {
-    var turn = players.findIndex((x) => x.name == username);
-    console.log('current', username, turn);
+    var turn = players.findIndex((x) => x.username == username);
+    // console.log('lookup', username, turn);
     return turn;
   }
 
   // get player seat by name
   function getPlayerSeat(username) {
-    var shift = getPlayerTurn("{{ current_user.username }}") - players.length;
-    console.log('shift', shift);
+    var shift = getPlayerTurn("{{ current_user.username }}") + players.length;
+    // console.log('shift', shift);
     var turn = (getPlayerTurn(username) + shift) % players.length;
-    console.log('turn', turn);
+    // console.log('turn', turn);
     return seats[turn];
   }
 
   // abstract player hands
   $.each(players, function(_, player) {
+    var seat = getPlayerSeat(player.username);
     if('hand' in player) {
       // check player turn
       if(player.active) {
@@ -59,17 +60,17 @@
       };
       // present users hand
       $.each(JSON.parse(player.hand), function(_, card) {
-        addCard(selector='#player-main', name=card.rank + card.suit);
+        addCard('#player-main', card.rank + card.suit);
       });
     } else {
+      // provide abstraction for other player hands
       for(var i = 0; i < player.card_count; i++) {
-        // turn cards for players sitting on side
+        // rotate cards for players sitting on side
         var cls = 'card';
-        if (player.seat == 'left' || player.seat == 'right') {
+        if (seat == 'left' || seat == 'right') {
           cls = `${cls} rotate-card`;
         }
-        // abstract other player hands
-        addCard(`#player-${player.seat}`, 'RED_BACK', cls);
+        addCard(`#player-${seat}`, 'RED_BACK', cls);
       }
     }
   });
@@ -77,8 +78,8 @@
   // retrieve events
   eventSource.addEventListener('play-card', p => {
     var play = JSON.parse(p.data);
-    var seat = getPlayerSeat(play.user);
-    console.log('seat', seat);
+    var seat = getPlayerSeat(play.username);
+    // console.log('seat', seat);
     var cls=`card pile-card-${seat}`;
     if (seat == 'left' || seat == 'right') {
       cls=`${cls} rotate-card`;
@@ -89,14 +90,15 @@
   // retrieve played card
   cards.playCard = function($card) {
     play = cards.cid($card);
-    console.log('card', $card);
-    console.log('card', play);
-    cards.remove($card);
+    // console.log('card', $card);
+    // console.log('card', play);
     $.post('/play', {
-      user: "{{ current_user.username }}",
+      username: "{{ current_user.username }}",
       rank: play.slice(0, -1),
       suit: play.slice(-1)
     });
+    // TODO: remove card from hand if valid play
+    cards.remove($card);
   }
 </script>
 {% endblock %}

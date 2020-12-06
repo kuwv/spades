@@ -16,6 +16,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False, unique=False)
     password = db.Column(db.String(200), primary_key=False, unique=False)
+    wins = db.Column(db.Integer)
+    losses = db.Column(db.Integer)
 
     def __repr__(self) -> str:
         '''Return string representation of card.'''
@@ -30,3 +32,9 @@ class User(UserMixin, db.Model):
     def check_password(self, password: str) -> bool:
         '''Check user password.'''
         return argon2.verify(password, self.password)
+
+    def add_win(self) -> None:
+        self.wins += 1
+
+    def add_loss(self) -> None:
+        self.losses += 1

@@ -15,6 +15,13 @@ loglevel: str = os.getenv('LOGLEVEL', 'INFO')
 player_max: int = 4
 winning_score: int = 100
 
+
+def set_player_max(count: int) -> None:
+    '''Set player count.'''
+    global player_max
+    player_max = count
+
+
 # db settings
 db_type: str = os.getenv('DB_TYPE', 'postgres')
 db_host: str = os.getenv('POSTGRESQL_HOST', 'localhost')

@@ -32,7 +32,7 @@ class LoginForm(FlaskForm):
             Length(min=8, max=25)
         ]
     )
-    submit: SubmitField = SubmitField('Signin')
+    submit: SubmitField = SubmitField('login')
 
 
 class RegistrationForm(LoginForm):
@@ -43,7 +43,7 @@ class RegistrationForm(LoginForm):
             Length(min=8, max=25)
         ]
     )
-    submit: SubmitField = SubmitField('Register')
+    submit: SubmitField = SubmitField('register')
 
 
 @auth.route('/register', methods=['GET', 'POST'])
@@ -68,7 +68,7 @@ def register() -> Union[Response, str]:
         return flask.render_template('register.html', form=form)
     else:
         flask.flash('cannot register during active session')
-        return flask.redirect(url_for('main.gameboard'))
+        return flask.redirect(url_for('main.lobby'))
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -80,7 +80,7 @@ def login() -> Union[Response, str]:
         if user and user.check_password(form.password.data):
             login_user(user)
             flask.flash('successfull login')
-            return flask.redirect(url_for('main.gameboard'))
+            return flask.redirect(url_for('main.lobby'))
         else:
             flask.flash('Error: invalid credentials')
             return flask.redirect(url_for('auth.login'))

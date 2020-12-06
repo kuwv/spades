@@ -1,17 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="game-login">
-  <form class="pure-form pure-form-aligned" method="POST" action="/login">
+<div class="game-lobby">
+  <form class="pure-form pure-form-aligned" method="POST" action="/lobby">
     {{ form.csrf_token }}
     <fieldset>
       <div class="pure-controls">
-        <p>1. see win/loss statistics of themselves and others
-           2. see game moves of completed games
-           3. start a new game
-           4. join and existing game that needs players
+        <p>
+           1. see win/loss statistics of themselves and others<br/>
+           2. see game moves of completed games<br/>
+           3. start a new game<br/>
+           4. join an existing game that needs players<br/>
         </p>
+        <tr>
+        {% for game in form.games %}
+          <td>{{ game }}</td>
+        {% endfor %}
+        </tr>
+      <!--
+      <div class="pure-controls">
+        {{ form.start_game() }}
+      </div>
+      -->
+      <div class="pure-controls">
+        {{ form.join_game() }}
       </div>
     </fieldset>
   </form>
 </div>
 {% endblock %}
+

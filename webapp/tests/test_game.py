@@ -6,12 +6,12 @@
 
 import pytest
 
-from spades import exceptions
+from spades import config, exceptions
 from spades.game import Game
 from spades.models.player import Player
 
 
-game = Game()
+game = Game(4)
 game.add_player(Player('Jim'))
 game.add_player(Player('Mike'))
 game.add_player(Player('Jill'))
@@ -38,6 +38,7 @@ def generate_trick(g: Game):
 
 def test_game_states() -> None:
     '''Test game states.'''
+    print('player max', config.player_max)
 
     # test adding over maximum number of players.
     with pytest.raises(exceptions.InvalidPlayerException):
@@ -45,7 +46,7 @@ def test_game_states() -> None:
 
     count = 0
     while not game.check_winner():
-        print('start new match')
+        # print('start new match')
 
         # start the game from waiting state
         assert game.state == 'waiting'

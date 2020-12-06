@@ -9,8 +9,7 @@ from typing import List, Optional
 
 from transitions import Machine
 
-from spades import config
-from spades import exceptions
+from spades import config, exceptions
 from spades.bid import BidMixin
 from spades.models.book import Book
 from spades.models.deck import Deck
@@ -25,7 +24,6 @@ log.setLevel(config.loglevel)
 class Game(BidMixin, PlayerTurns):
     '''Provide game object.'''
 
-    player_max = config.player_max
     winning_score = config.winning_score
 
     states = [
@@ -69,15 +67,15 @@ class Game(BidMixin, PlayerTurns):
         }
     ]
 
-    def __init__(self, player_count: Optional[int] = None) -> None:
+    def __init__(self, player_max: Optional[int] = None) -> None:
         '''Initialize game.'''
         super().__init__()
-        if player_count:
-            Game.player_max = player_count
+        if player_max:
+            config.set_player_max(player_max)
         self.__dealer: Optional[int] = None
         self._bid_turn: int = 0
         self._deck: Deck = Deck()
-        self.__stack: Book = None
+        self.__stack: Optional[Book] = None
 
         self.machine = Machine(
             model=self,
@@ -90,7 +88,7 @@ class Game(BidMixin, PlayerTurns):
 
     def check_player_count(self) -> bool:
         '''Check player count state.'''
-        return self.player_count == Game.player_max
+        return self.player_count == config.player_max
 
     def check_bids(self) -> bool:
         '''Check player bids state.'''
@@ -123,7 +121,7 @@ class Game(BidMixin, PlayerTurns):
             self.current_turn = self.stack.winner
             self.__stack = None
         else:
-            print('do something')
+            print('not ready to cleanup')
 
     def check_handsize(self) -> bool:
         '''Check if players hand state is empty.'''
@@ -176,7 +174,7 @@ class Game(BidMixin, PlayerTurns):
 
     def select_dealer(self) -> None:
         '''Randomly choose starting player.'''
-        if self.player_count == Game.player_max:
+        if self.player_count == config.player_max:
             if not self.dealer:
                 self.__dealer = randrange(self.player_count)
             else:
@@ -188,14 +186,20 @@ class Game(BidMixin, PlayerTurns):
         if self.state == 'bidding':  # type: ignore
             if self.player_count > 0:
                 card_piles: List[Hand] = []
-                for hand in range(0, self.player_count):
+                for hand in range(0, 4):
                     card_piles.append(Hand())
                 turn = 0
                 for card in self._deck:
+                    # TODO: if max hand less than 13
                     card_piles[turn % len(card_piles)].add_card(card)
                     turn += 1
-                for player in self.players:
-                    player.hand = card_piles.pop()
+                for num, player in enumerate(self.players):
+                    if config.player_max == 4:
+                        player.hand = card_piles.pop()
+                    elif config.player_max == 3 and num != 3:
+                        player.hand = card_piles.pop()
+                    elif config.player_max == 2 and num != 1 and num != 3:
+                        player.hand = card_piles.pop()
             else:
                 raise exceptions.InvalidPlayerException('no players in game')
         else:
@@ -211,7 +215,7 @@ class Game(BidMixin, PlayerTurns):
     def add_player(self, player: Player) -> None:
         '''Add player to game.'''
         if self.state == 'waiting':  # type: ignore
-            if self.player_count < Game.player_max:
+            if self.player_count < config.player_max:
                 PlayerTurns.append_player(self, player)
             else:
                 raise exceptions.InvalidPlayerException(
