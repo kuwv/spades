@@ -6,7 +6,7 @@
 
 # import pytest
 
-from spades.webui.models.user import User
+from spades.models.user import User
 
 
 def test_password():

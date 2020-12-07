@@ -5,12 +5,19 @@
 
 from typing import List, Optional
 
-from spades import config, exceptions
+from spades import config, db, exceptions
 from spades.game.models.card import Card
 
 
-class Book:
+class Book:  # (db.Model):
     '''Provide book object.'''
+
+    # id = db.Column(db.Integer, primary_key=True)
+    # username = db.Column(db.String(100), nullable=False, unique=False)
+    # password = db.Column(db.String(200), primary_key=False, unique=False)
+    # trump = db.Column(db.Boolean, unique=False, default=False)
+    # lead_player = db.Column(db.Integer, db.ForeignKey('user.id')
+    # player =
 
     def __init__(self) -> None:
         '''Initialize book.'''

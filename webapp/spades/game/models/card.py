@@ -5,7 +5,7 @@
 
 import json
 
-from spades import exceptions
+from spades import db, exceptions
 
 
 class CardEncoder(json.JSONEncoder):
@@ -16,8 +16,12 @@ class CardEncoder(json.JSONEncoder):
         return {'rank': o.rank, 'suit': o.suit}
 
 
-class Card:
+class Card(db.Model):
     '''Provide card object.'''
+
+    id = db.Column(db.Integer, primary_key=True)
+    rank = db.Column(db.String(1), nullable=False)
+    suit = db.Column(db.String(1), nullable=False)
 
     ranks: tuple = (
         '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'

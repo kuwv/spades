@@ -61,6 +61,9 @@ class PlayerTurns:
         '''Add player to game.'''
         self.__players.append(player)
 
+    def get_player_turn(self, username: str) -> int:
+        return self.__players.index(self.get_player_by_username(username))
+
     def get_player(self, turn: int) -> Player:
         '''Get current player.'''
         return self.__players[turn % self.player_count]

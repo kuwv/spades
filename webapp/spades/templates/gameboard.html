@@ -55,9 +55,11 @@
     var seat = getPlayerSeat(player.username);
     if('hand' in player) {
       // check player turn
-      if(player.active) {
+      if (player.active === 'true') {
         $('#player-main').addClass('active-hand');
-      };
+      } else {
+        $('#player-main').removeClass('active-hand');
+      }
       // present users hand
       $.each(JSON.parse(player.hand), function(_, card) {
         addCard('#player-main', card.rank + card.suit);
