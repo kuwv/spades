@@ -25,14 +25,11 @@ autopep8 = "*"
 mypy = "*"
 fakeredis = "*"
 flask-assets = "*"
-lesscpy = "*"
-jsmin = "*"
 githubrelease = "*"
 
 [packages]
 flask = "*"
 gunicorn = "*"
-cerberus = "*"
 transitions = "*"
 flask-session = "*"
 redis = "*"
@@ -46,6 +43,7 @@ psycopg2-binary = "*"
 flask-sqlalchemy = "*"
 flask-sse = "*"
 gevent = "*"
+cerberus = "*"
 
 [requires]
 python_version = "3.8"

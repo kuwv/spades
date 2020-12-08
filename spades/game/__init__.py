@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 log.setLevel(config.loglevel)
 
 
-class Game(BidMixin, PlayerTurns):
+class GameState(BidMixin, PlayerTurns):
     '''Provide game object.'''
 
     winning_score = config.winning_score
@@ -79,8 +79,8 @@ class Game(BidMixin, PlayerTurns):
 
         self.machine = Machine(
             model=self,
-            states=Game.states,
-            transitions=Game.transitions,
+            states=GameState.states,
+            transitions=GameState.transitions,
             initial='waiting'
         )
 

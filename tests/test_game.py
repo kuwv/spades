@@ -7,19 +7,19 @@
 import pytest
 
 from spades import exceptions
-from spades.game import Game
+from spades.game import GameState
 from spades.game.models.player import Player
 
 
 player_count = 2
-game = Game(player_count)
+game = GameState(player_count)
 game.add_player(Player('Jim'))
 game.add_player(Player('Mike'))
 # game.add_player(Player('Jill'))
 # game.add_player(Player('Kim'))
 
 
-def generate_bid(g: Game):
+def generate_bid(g: GameState):
     turn = g.current_bidder()
     # print('turn:', turn)
     player = g.get_player(turn)
@@ -29,7 +29,7 @@ def generate_bid(g: Game):
     assert player.bid == bid
 
 
-def generate_trick(g: Game):
+def generate_trick(g: GameState):
     turn = g.current_turn
     # print('turn:', turn)
     player = g.get_player(turn)
@@ -39,7 +39,7 @@ def generate_trick(g: Game):
     # print(f"{player.username} hand: {player.hand}")
 
 
-def test_game_states() -> None:
+def test_game_states(app) -> None:
     '''Test game states.'''
     # test adding over maximum number of players.
     with pytest.raises(exceptions.InvalidPlayerException):

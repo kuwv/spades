@@ -5,27 +5,41 @@
 
 from typing import Optional, Set
 
-from spades import exceptions
+from spades import db, exceptions
 from spades.game.models.book import Book
 from spades.game.models.card import Card
 from spades.game.models.hand import Hand
 
 
-class Player:
+# TODO: rename turn
+# current_hand = db.Table(
+#     'current_hand',
+#     db.Column(
+#         'player_id', db.Integer, db.ForeignKey('player.id'), primary_key=True
+#     )
+#     db.Column(
+#         'hand_id', db.Integer, db.ForeignKey('card.id'), primary_key=True
+#     ),
+# )
+
+
+class Player(db.Model):
     '''Provide player object.'''
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.Integer, db.ForeignKey('user.id'))
+    # hand = db.relationship('Hand', uselist=False, back_populates='player')
 
     def __init__(self, username: str) -> None:
         '''Initialize player.'''
+        self.username = username
+
+        # TODO: values are round based
         self.__hand: Optional[Hand] = None
         self.__books: Set[Book] = set()
         self.__bid: Optional[int] = None
         self.__bags: int = 0
         self.__score: int = 0
-        self.__username = username
-
-    @property
-    def username(self) -> str:
-        return self.__username
 
     @property
     def score(self) -> int:

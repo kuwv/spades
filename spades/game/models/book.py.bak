@@ -1,0 +1,89 @@
+# -*- coding: utf-8 -*-
+# copyright: (c) 2020 by Jesse Johnson.
+# license: Apache 2.0, see LICENSE for more details.
+'''Provide book package.'''
+
+from typing import List, Optional
+# from uuid import uuid4
+
+# from sqlalchemy.dialects.postgresql import UUID
+
+from spades import config, db, exceptions
+from spades.game.models.card import Card
+
+# tags = db.Table(
+#     'stack',
+#     db.Column(
+#         'card_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True
+#     ),
+#     db.Column(
+#         'player_id', db.Integer, db.ForeignKey('player.id'), primary_key=True
+#     )
+# )
+
+
+class Book(db.Model):
+    '''Provide book object.'''
+
+    # id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = db.Column(db.Integer, primary_key=True)
+    # stack = db.relationship('Card', uselist=True, backref='Book')
+    # lead_player = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'))
+    lead_player = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __init__(self) -> None:
+        '''Initialize book.'''
+        self.card_max = config.player_max
+        self.stack: List[Card] = []
+        # self.trump: Optional[Card] = None
+        # self.lead_player = None
+
+    def __repr__(self) -> str:
+        '''Return string representation of book.'''
+        return (
+            f"{self.__class__.__name__}(stack={self.__stack!r})"
+        )
+
+    def __len__(self) -> int:
+        '''Return length of book.'''
+        return len(self.stack)
+
+    def __contains__(self, card: Card) -> bool:
+        '''Check if book conatins card.'''
+        return True if card in self.stack else False
+
+    @property
+    def winner(self) -> Optional[None]:
+        '''Get winner of book.'''
+        # TODO: refactor to get winner from stack
+        return self.lead_player
+
+    @property
+    def trump(self) -> Optional[Card]:
+        '''Get current high card.'''
+        if self.stack == []:
+            return None
+        else:
+            trump: Optional[Card] = None
+            for card in self.stack:
+                if not trump:
+                    trump = card
+                elif card > trump:
+                    trump = card
+            return trump
+
+    @property
+    def suit(self) -> Optional[str]:
+        '''Get opening suit of book.'''
+        if self.stack == []:
+            return None
+        else:
+            return self.stack[0].suit
+
+    def add_trick(self, player_id: int, card: Card) -> None:
+        '''Add card to book.'''
+        # print('trick', player_id, card)
+        if len(self.stack) < self.card_max:
+            self.stack.append(card)
+        else:
+            raise exceptions.MaxBookSizeException('max book size')

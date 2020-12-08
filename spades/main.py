@@ -12,13 +12,13 @@ from wtforms import IntegerField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 
 # from spades import exceptions
-from spades.game import Game
+from spades.game import GameState
 from spades.game.models.player import Player
 
 main = Blueprint('main', __name__)
 
 mock_names: List[str] = ['john']
-__game: Game = Game()
+__game: GameState = GameState()
 
 
 class LobbyForm(FlaskForm):
