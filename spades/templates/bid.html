@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src='/static/js/jquery.min.js'></script>
+<script src='/static/js/cards.min.js'></script>
+
+<div id='pile' class='pile-container'></div>
+
+<table class="pure-table">
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>bid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Honda</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Toyota</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Hyundai</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="bid-menu">
+  <form class="pure-form pure-form-aligned" method="POST" action="/bids">
+    {{ form.csrf_token }}
+    <fieldset>
+      <div class="pure-control-group">
+        {{ form.bid.label }}
+        {{ form.bid }}
+      </div>
+      <div class="pure-controls">
+        {{ form.submit() }}
+      </div>
+    </fieldset>
+  </form>
+</div>
+
+<script>
+  // number of players
+  var hand = {{ data | tojson }}
+
+  // add card to page
+  function addCard(selector, cardname, cls='card') {
+    $(selector).append(
+      $('<img>', {
+        class: cls, src: `/static/img/cards/${cardname}.svg`
+      })
+    );
+  }
+
+  // present users hand
+  $.each(JSON.parse(hand), function(_, card) {
+    addCard('#pile', card.rank + card.suit);
+  });
+
+  $('#submit').prop('disabled', true);
+
+  // retrieve events
+  // eventSource.addEventListener('player-bid', p => {
+  //   var player_bid = JSON.parse(p.data);
+  //   var seat = getPlayerSeat(play.username);
+  //   // console.log('seat', seat);
+  //   var cls=`card pile-card-${seat}`;
+  //   if (seat == 'left' || seat == 'right') {
+  //     cls=`${cls} rotate-card`;
+  //   }
+  // }, false);
+
+  // retrieve played card
+  // cards.playCard = function($card) {
+  //   play = cards.cid($card);
+  //   // console.log('card', $card);
+  //   // console.log('card', play);
+  //   $.post('/play', {
+  //     username: "{{ current_user.username }}",
+  //     rank: play.slice(0, -1),
+  //     suit: play.slice(-1)
+  //   });
+  //   // TODO: remove card from hand if valid play
+  //   cards.remove($card);
+  // }
+</script>
+{% endblock %}

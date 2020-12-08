@@ -27,6 +27,10 @@ pipenv install --dev
 
 ...
 
+```
+gunicorn app:app --bind=0.0.0.0:8080 --reload --worker-class=gevent
+```
+
 ## Credits
 
 Chris Aguilar for Vector Playing Cards

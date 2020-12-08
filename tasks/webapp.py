@@ -12,7 +12,7 @@ from invoke import task
 from . import config
 
 
-def build(ctx, path='.'):  # type: ignore
+def build(ctx, path='.'):
     '''Build docker image.'''
     ctx.run(f"""\
         pipenv lock \
@@ -23,7 +23,7 @@ def build(ctx, path='.'):  # type: ignore
 
 
 @task
-def start(ctx, hostname='localhost', port=8080, workers=4):  # type: ignore
+def start(ctx, hostname='localhost', port=8080, workers=4):
     '''Start webapp.'''
     with ctx.cd(config.webapp_dir):
         ctx.run(
@@ -39,6 +39,6 @@ def start(ctx, hostname='localhost', port=8080, workers=4):  # type: ignore
 
 
 @task
-def stop(ctx):  # type: ignore
+def stop(ctx):
     '''Stop webapp.'''
     ctx.run('pkill gunicorn')

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src='/static/js/jquery.min.js'></script>
+<script src='/static/js/cards.min.js'></script>
+
+<div id='pile' class='pile-container'></div>
+<div id='player-south' class='hand hhand-compact hand-south'></div>
+<div id='player-west' class='hand vhand-compact hand-west'></div>
+<div id='player-north' class='hand hhand-compact hand-north'></div>
+<div id='player-east' class='hand vhand-compact hand-east'></div>
+
+<script>
+  // number of players
+  var players = {{ data | tojson }}
+  console.log(players)
+
+  // determine seats
+  if (players.length === 4) {
+    var seats = ['south', 'west', 'north', 'east'];
+  } else if (players.length === 3) {
+    var seats = ['north', 'west', 'east'];
+  } else {
+    var seats = ['south', 'north'];
+  }
+
+  // get event source stream
+  var eventSource = new EventSource("{{ url_for('sse.stream') }}");
+
+  // retrieve events
+  eventSource.addEventListener('play-card', p => {
+    var play = JSON.parse(p.data);
+    var seat = getPlayerSeat(play.username);
+    console.log('turn play', seat, play);
+    var cls=`card pile-card-${seat}`;
+    if (seat == 'west' || seat == 'east') {
+      cls=`${cls} rotate-card`;
+    }
+    addCard('#pile', play.rank + play.suit, cls);
+  }, false);
+
+  // retrieve played card
+  cards.playCard = function($card) {
+    play = cards.cid($card);
+    console.log('card', $card);
+    console.log('card', play);
+    $.post('/play', {
+      username: "{{ current_user.username }}",
+      rank: play.slice(0, -1),
+      suit: play.slice(-1)
+    });
+    // TODO: remove card from hand if valid play
+    cards.remove($card);
+  }
+
+  // add card to page
+  function addCard(selector, cardname='RED_BACK', cls='card') {
+    $(selector).append(
+      $('<img>', {
+        class: cls, src: `/static/img/cards/${cardname}.svg`
+      })
+    );
+  }
+
+  // get player turn
+  function getPlayerTurn(username) {
+    var turn = players.findIndex((x) => x.username == username);
+    console.log('lookup', username, turn);
+    return turn;
+  }
+
+  // get player seat by name
+  function getPlayerSeat(username) {
+    var shift = getPlayerTurn("{{ current_user.username }}") + players.length;
+    console.log('shift', shift);
+    var turn = (getPlayerTurn(username) + shift) % players.length;
+    console.log('turn', turn);
+    return seats[turn];
+  }
+
+  // abstract player hands
+  $.each(players, function(_, player) {
+    var seat = getPlayerSeat(player.username);
+    if('hand' in player) {
+      // check player turn
+      if (player.active === 'true') {
+        $('#player-south').addClass('active-hand');
+      } else {
+        $('#player-south').removeClass('active-hand');
+      }
+      // present users hand
+      $.each(JSON.parse(player.hand), function(_, card) {
+        addCard('#player-south', card.rank + card.suit);
+      });
+    } else {
+      // provide abstraction for other player hands
+      for(var i = 0; i < player.card_count; i++) {
+        // rotate cards for players sitting on side
+        var cls = 'card';
+        if (seat == 'west' || seat == 'east') {
+          cls = `${cls} rotate-card`;
+        }
+        addCard(`#player-${seat}`, 'RED_BACK', cls);
+      }
+    }
+  });
+</script>
+{% endblock %}

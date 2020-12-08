@@ -6,7 +6,7 @@
 
 from invoke import task
 
-from webapp.__version__ import __version__
+from __version__ import __version__
 # from . import config
 from . import webapp
 from . import webui
