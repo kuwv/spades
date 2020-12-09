@@ -37,16 +37,12 @@ class Card(db.Model):
         if rank in Card.ranks:
             self.rank = rank
         else:
-            raise exceptions.InvalidRankCardException(
-                'except on incorrect rank'
-            )
+            raise exceptions.InvalidRankCardException('invalid rank')
 
         if suit.lower().capitalize() in Card.suits:
             self.suit = suit.lower().capitalize()
         else:
-            raise exceptions.InvalidSuitCardException(
-                'except on incorrect suit'
-            )
+            raise exceptions.InvalidSuitCardException('invalid suit')
 
     def __repr__(self) -> str:
         '''Return string representation of card.'''
@@ -56,6 +52,7 @@ class Card(db.Model):
 
     def __hash__(self) -> int:
         '''Check object hash.'''
+        # TODO: better alternative
         return hash((self.rank, self.suit))
 
     def __eq__(self, other: object) -> bool:

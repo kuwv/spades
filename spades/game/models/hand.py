@@ -36,8 +36,8 @@ class Hand(db.Model):
     max_size = 13
 
     id = db.Column(db.Integer, primary_key=True)
-    # player_id = db.Column(db.Integer, db.ForeignKey('player.id'))
-    # player = db.relationship('Player', back_populates='hand')
+    player_id = db.Column(db.Integer, db.ForeignKey('player.id'))
+    player = db.relationship('Player', back_populates='hand')
     cards = db.relationship(
         'Card',
         secondary=cards,

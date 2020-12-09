@@ -1,5 +1,18 @@
 # Project files
 README.md
+nginx/
+tasks/
+tests/
+.bumpversion.cfg
+.flake8
+.git
+.gitattributes
+.gitignore
+.isort.cfg
+.mypy.ini
+.travis.yml
+.pydocstyle
+pytest.ini
 
 # Log files (if you are creating logs in debug mode, uncomment this)
 *.log

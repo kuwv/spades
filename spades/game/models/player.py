@@ -27,15 +27,14 @@ class Player(db.Model):
     '''Provide player object.'''
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.Integer, db.ForeignKey('user.id'))
-    # hand = db.relationship('Hand', uselist=False, back_populates='player')
+    username = db.Column(db.String(100), nullable=False, unique=True)
+    hand = db.relationship('Hand', uselist=False, back_populates='player')
 
     def __init__(self, username: str) -> None:
         '''Initialize player.'''
         self.username = username
 
         # TODO: values are round based
-        self.__hand: Optional[Hand] = None
         self.__books: Set[Book] = set()
         self.__bid: Optional[int] = None
         self.__bags: int = 0
@@ -76,15 +75,15 @@ class Player(db.Model):
             Hand.spades_broken = False
         self.__score = score
 
-    @property
-    def hand(self) -> Optional[Hand]:
-        '''Get player hand.'''
-        return self.__hand
+    # @property
+    # def hand(self) -> Optional[Hand]:
+    #     '''Get player hand.'''
+    #     return self.
 
-    @hand.setter
-    def hand(self, hand: Hand) -> None:
-        '''Set player hand.'''
-        self.__hand = hand
+    # @hand.setter
+    # def hand(self, hand: Hand) -> None:
+    #     '''Set player hand.'''
+    #     self.hand = hand
 
     @property
     def books(self) -> Set[Book]:
@@ -108,8 +107,8 @@ class Player(db.Model):
 
     def play_card(self, rank: str, suit: str) -> Optional[Card]:
         '''Play card from players hand.'''
-        if self.__hand:
-            return self.__hand.pull_card(rank, suit)
+        if self.hand and self.hand.cards:
+            return self.hand.pull_card(rank, suit)
         else:
             raise exceptions.EmptyHandSizeException(
                 'player has no cards to play'

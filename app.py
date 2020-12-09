@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 '''Provide webapp start.'''
 
 from spades import create_app
@@ -19,13 +20,16 @@ app = create_app()
 #
 #
 # class WebApplication(BaseApplication):
+#     '''Implement web application object.'''
 #
 #     def __init__(self, app: Flask, options: Dict[Any, Any] = None) -> None:
+#         '''Initialize web application.'''
 #         self.options = options or {}
 #         self.application = app
 #         super().__init__()
 #
 #     def load_config(self) -> None:
+#         '''Load web application configuration.'''
 #         config = {
 #             key: value
 #             for key, value in self.options.items()
@@ -35,6 +39,7 @@ app = create_app()
 #             self.cfg.set(key.lower(), value)
 #
 #     def load(self) -> Flask:
+#         '''Load application for service.'''
 #         return self.application
 #
 #

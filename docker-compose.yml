@@ -2,65 +2,75 @@
 version: '3.8'
 
 networks:
-  postgres-net:
-  redis-net:
-  # keycloak-net:
+  backend-network:
+  # db-net:
+  # cache-net:
+  proxy-net:
 
 volumes:
-  postgres-datastore:
-  redis-datastore:
-  # keycloak-datastore:
+  db-volume:
+  cache-volume:
 
 services:
   spades-db:
     image: centos/postgresql-12-centos7
     volumes:
-      - postgres-datastore:/var/lib/postgresql/data
+      - db-volume:/var/lib/postgresql/data
     networks:
-      - postgres-net
+      # - db-net
+      - backend-network
+    expose:
+      - 5432
     ports:
       - '5432:5432'
     environment:
       POSTGRESQL_DATABASE: spades
       POSTGRESQL_USER: spades
-      POSTGRESQL_PASSWORD: ${WEBAPP_POSTGRESQL_PASSWORD:-password}
+      POSTGRESQL_PASSWORD: password
 
-  redis:
+  spades-cache:
     image: centos/redis-5-centos7
     volumes:
-      - redis-datastore:/var/lib/redis/data
+      - cache-volume:/var/lib/redis/data
     networks:
-      - redis-net
+      # - cache-net
+      - backend-network
     ports:
       - '6379:6379'
     environment:
-      REDIS_PASSWORD: ${WEBAPP_REDIS_PASSWORD:-password}
+      REDIS_PASSWORD: password
 
-#   spades-webapp:
-#     image: spades:latest
+  spades:
+    build: .
+    depends_on:
+      - spades-db
+      - spades-cache
+    links:
+      - spades-db:spades-db
+    networks:
+      - backend-network
+      # - db-net
+      # - cache-net
+      - proxy-net
+    ports:
+      - '8080:8080'
+    environment:
+      POSTGRESQL_HOST: spades-db
+      POSTGRESQL_USER: spades
+      POSTGRESQL_PASSWORD: password
+      REDIS_HOST: spades-cache
+      REDIS_PASSWORD: password
+
+#   proxy:
+#     build: nginx
+#     image: nginx:latest
+#     depends_on: spades
 #     networks:
-#       - webapp-net
+#       - proxy-net
 #     ports:
-#       - '8080:8080'
+#       - '80:80'
+#       - '443:443'
 #     environment:
 #       POSTGRESQL_HOST: spades-db
 #       REDIS_HOST: redis
 #       REDIS_PASSWORD: ${WEBAPP_REDIS_PASSWORD:-password}
-#
-#   spades-ui:
-#     image: jboss/keycloak:4.5.0.Final
-#     depends_on:
-#       - keycloak-db
-#     networks:
-#       - keycloak-net
-#     ports:
-#       - '8180:8080'
-#     environment:
-#       DB_VENDOR: POSTGRES
-#       DB_ADDR: keycloak-db
-#       DB_PORT: 5432
-#       DB_DATABASE: keycloak
-#       DB_USER: keycloak
-#       DB_PASSWORD: password
-#       KEYCLOAK_USER: admin
-#       KEYCLOAK_PASSWORD: admin

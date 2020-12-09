@@ -9,11 +9,12 @@ from typing import List, Optional
 
 from transitions import Machine
 
-from spades import config, exceptions
+from spades import config, db, exceptions
 from spades.game.bid import BidMixin
 from spades.game.models.book import Book
 from spades.game.models.deck import Deck
 from spades.game.models.hand import Hand
+from spades.game.models.play import Play
 from spades.game.models.player import Player
 from spades.game.turn import PlayerTurns
 
@@ -249,10 +250,10 @@ class GameState(BidMixin, PlayerTurns):
                         suit == self.__stack.suit or
                         len(player.hand.list_suit(self.__stack.suit)) <= 0
                     ):
-                        self.__stack.add_trick(
-                            player_id,
-                            player.play_card(rank, suit)
-                        )
+                        play = Play(player_id, player.play_card(rank, suit))
+                        self.__stack.add_trick(play)
+                        db.session.add(play)
+                        db.session.commit()
                         self.current_turn += 1
                     else:
                         raise exceptions.IllegalPlayException(
