@@ -32,7 +32,11 @@ class Play(db.Model):
 
     def __repr__(self) -> str:
         '''Return string representation of card.'''
-        card = Card.query.get(self.card_id)
+        play = f"player_id={self.player_id!r}, card={self.card!r}"
         return (
-            f"{self.__class__.__name__}(player={self.player_id!r}, card={card!r})"
+            f"{self.__class__.__name__}({play})"
         )
+
+    @property
+    def card(self) -> str:
+        return Card.query.get(self.card_id)

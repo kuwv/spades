@@ -11,18 +11,6 @@ from spades.game.models.card import Card
 from spades.game.models.hand import Hand
 
 
-# TODO: rename turn
-# current_hand = db.Table(
-#     'current_hand',
-#     db.Column(
-#         'player_id', db.Integer, db.ForeignKey('player.id'), primary_key=True
-#     )
-#     db.Column(
-#         'hand_id', db.Integer, db.ForeignKey('card.id'), primary_key=True
-#     ),
-# )
-
-
 class Player(db.Model):
     '''Provide player object.'''
 

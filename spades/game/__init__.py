@@ -7,6 +7,7 @@ import logging
 from random import randrange
 from typing import List, Optional
 
+from sqlalchemy.inspection import inspect
 from transitions import Machine
 
 from spades import config, db, exceptions
@@ -245,14 +246,20 @@ class GameState(BidMixin, PlayerTurns):
             if player_id == self.current_turn:
                 if len(self.stack) < self.player_count:
                     player = self.get_player(player_id)
+                    print(player)
                     if (
                         len(self.__stack) == 0 or
                         suit == self.__stack.suit or
                         len(player.hand.list_suit(self.__stack.suit)) <= 0
                     ):
-                        play = Play(player_id, player.play_card(rank, suit))
-                        self.__stack.add_trick(play)
+                        play = Play(
+                            player_id,
+                            inspect(player.play_card(rank, suit)).identity[0]
+                        )
                         db.session.add(play)
+                        db.session.commit()
+                        self.__stack.add_trick(play)
+                        db.session.add(player)
                         db.session.commit()
                         self.current_turn += 1
                     else:

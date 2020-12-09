@@ -10,7 +10,10 @@ from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from flask_sse import sse
 
-db = SQLAlchemy()
+from spades import config
+
+
+db = SQLAlchemy(engine_options=config.sqlalchemy_engine_options)
 login_manager = LoginManager()
 session = Session()
 

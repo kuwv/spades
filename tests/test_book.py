@@ -27,10 +27,12 @@ def test_book(app):
         db.session.add(card)
     db.session.commit()
 
-    player_id = inspect(player).identity[0]
-    card_id = inspect(card).identity[0]
-
-    book.add_trick(Play(player_id, card_id))
+    book.add_trick(
+        Play(
+            inspect(player).identity[0],
+            inspect(card).identity[0]
+        )
+    )
     db.session.add(card)
     db.session.commit()
     print('plays:', book.plays)

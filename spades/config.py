@@ -36,30 +36,13 @@ session = {
     'host': os.getenv('REDIS_HOST', 'localhost'),
     'port': int(os.getenv('REDIS_PORT', 6379)),
     'password': os.getenv('REDIS_PASSWORD', 'password'),
-    'socket_timeout': int(os.getenv('REDIS_TIMEOUT', 300)),
-    # 'db': 0,
-    # 'socket_connect_timeout': None,
-    # 'socket_keepalive': None,
-    # 'socket_keepalive_options': None,
-    # 'connection_pool': None,
-    # 'unix_socket_path': None,
-    # 'encoding': 'utf-8',
-    # 'encoding_errors': 'strict',
-    # 'charset': None,
-    # 'errors': None,
-    # 'decode_responses': False,
-    # 'retry_on_timeout': False,
-    'ssl': bool(os.getenv('REDIS_TLS', False)),
-    'ssl_keyfile': os.getenv('REDIS_KEYFILE', None),
-    'ssl_certfile': os.getenv('REDIS_CERTFILE', None),
-    'ssl_cert_reqs': os.getenv('REDIS_CERT_REQS', 'required'),
-    'ssl_ca_certs': os.getenv('REDIS_CA_CERTS', None),
-    'ssl_check_hostname': bool(os.getenv('REDIS_CERT_CHECK', False)),
-    # 'max_connections': None,
-    # 'single_connection_client': False,
-    # 'health_check_interval': 0,
-    # 'client_name': None,
-    # 'username': None
+    'socket_timeout': int(os.getenv('REDIS_TIMEOUT', 30)),
+}
+
+sqlalchemy_engine_options = {
+    'connect_args': {
+        'conection_timeout': 30
+    }
 }
 
 

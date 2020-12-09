@@ -10,10 +10,11 @@ SWE-681 Final Project - Spades
 
 ## Prerequisites
 
+- libevent (MacOS `brew install libevent`)
 - Docker
 - docker-compose
 - mkcert
-- Python 3.8
+- Python 3.9
 
 ## Install
 

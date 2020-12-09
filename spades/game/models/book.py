@@ -90,7 +90,7 @@ class Book(db.Model):
         '''Get opening suit of book.'''
         if self.plays == []:
             return None
-        return self.plays[0].suit
+        return self.plays[0].card.suit
 
     def add_trick(self, play: Play) -> None:
         '''Add card to book.'''

@@ -103,11 +103,14 @@ class Hand(db.Model):
 
     def pull_card(self, rank: str, suit: str) -> Card:
         '''Pull card from hand to play.'''
-        selection = Card(rank, suit)
-        for card in self.cards:
-            if selection == card:
-                if selection.suit == 'S':
-                    Hand.spades_broken = True
-                self.cards.remove(card)
-                return card
+        # TODO change relationship
+        card = Card.query.filter(
+            Card.rank == rank, Card.suit == suit
+        ).first()
+        print('----cards----', card)
+        if card in self.cards:
+            if card.suit == 'S':
+                Hand.spades_broken = True
+            self.cards.remove(card)
+            return card
         raise exceptions.IllegalPlayException('player does not hold card')
