@@ -9,15 +9,15 @@ from invoke import task
 
 from . import compose
 from . import filesystem
-from . import pki
+from . import certs
 
 
 @task
 def start(ctx, certs_path='./nginx/certs'):
     '''Start all services.'''
-    pki.setup(ctx)
+    certs.setup(ctx)
     filesystem.mkdir(ctx, certs_path)
-    pki.gencert(
+    certs.gencert(
         ctx,
         name=['spades.local', 'localhost'],
         key=f"{certs_path}/spades.key",
@@ -27,12 +27,12 @@ def start(ctx, certs_path='./nginx/certs'):
         'POSTGRESQL_PASSWORD': genword(entropy=56, length=128),
         'REDIS_PASSWORD': genword(entropy=56, length=128)
     }
-    compose.start(ctx, env)
+    compose.start(ctx, files=[], env=env)
 
 
 @task
 def stop(ctx, certs_path='./nginx/certs'):
     '''Stop all services.'''
     compose.stop(ctx)
-    pki.cleanup(ctx)
+    certs.cleanup(ctx)
     filesystem.rmdir(ctx, certs_path)

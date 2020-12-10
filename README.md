@@ -22,6 +22,13 @@ SWE-681 Final Project - Spades
 pip install pipenv
 pipenv shell
 pipenv install --dev
+```
+
+## Start
+
+Setup environment with docker-compose, mkcert, and secure passwords.
+
+```
 inv start
 ```
 

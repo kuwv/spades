@@ -9,16 +9,34 @@ from invoke import task
 from . import config
 
 
-@task
-def start(ctx, env={}, build=False, recreate=False):
+@task(iterable=['files'])
+def start(
+    ctx,
+    files,
+    env={},
+    build=False,
+    recreate=False,
+    dev=False
+):
     '''Start all compose containers.'''
     args = []
     if build:
         args.append('--build')
     if recreate:
         args.append('--force-recreate')
+    if dev:
+        files.append('docker-compose.yml')
+        files.append('docker-compose.override.yml')
+    if files != []:
+        files = [f"--file={f}" for f in files]
     with ctx.cd(config.project_path):
-        ctx.run("docker-compose up -d {a}".format(a=' '.join(args)), env=env)
+        ctx.run(
+            "docker-compose {f} up -d {a}".format(
+                f='' if files == [] else ' '.join(files),
+                a=' '.join(args)
+            ),
+            env=env
+        )
 
 
 @task

@@ -13,7 +13,7 @@ from flask_sse import sse
 from spades import config
 
 
-db = SQLAlchemy(engine_options=config.sqlalchemy_engine_options)
+db = SQLAlchemy()
 login_manager = LoginManager()
 session = Session()
 
