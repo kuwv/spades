@@ -10,7 +10,7 @@ from . import config
 
 
 @task
-def start(ctx, build=False, recreate=False):
+def start(ctx, env={}, build=False, recreate=False):
     '''Start all compose containers.'''
     args = []
     if build:
@@ -18,7 +18,7 @@ def start(ctx, build=False, recreate=False):
     if recreate:
         args.append('--force-recreate')
     with ctx.cd(config.project_path):
-        ctx.run("docker-compose up -d {a}".format(a=' '.join(args)))
+        ctx.run("docker-compose up -d {a}".format(a=' '.join(args)), env=env)
 
 
 @task

@@ -6,9 +6,12 @@
 
 from invoke import Collection
 
-from . import compose, docs, webui, webapp, build, pki, qa, validate
+from . import (
+    compose, docs, webui, webapp, build, pki, qa, setup, validate
+)
 
-ns = Collection().from_module(build)
+ns = Collection().from_module(setup)
+ns.add_collection(Collection.from_module(build))
 ns.add_collection(Collection.from_module(compose))
 ns.add_collection(Collection.from_module(pki))
 ns.add_collection(Collection.from_module(webapp))

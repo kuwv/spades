@@ -6,18 +6,22 @@ RUN pip install --no-cache-dir --requirement=requirements.txt
 COPY ./docs ./docs
 RUN mkdocs build
 
-FROM centos/nginx-116-centos7
+FROM centos:7
 
 COPY ./nginx.conf /etc/nginx/nginx.conf
-COPY ./conf.d /etc/nginx/conf.d/
 COPY --from=docs /opt/app-root/src/site/ /usr/share/nginx/html/docs/
 
 USER root
 
 RUN yum update-minimal --security -y ;\
+    yum install epel-release -y
+
+RUN yum install nginx -y ;\
     yum clean all && \
     rm -rf /var/cache/yum
 
-USER default
+USER nginx
 
 EXPOSE 80 443
+
+CMD ["nginx"]

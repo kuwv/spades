@@ -1,0 +1,27 @@
+---
+version: '3.8'
+
+services:
+  spades-db:
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRESQL_DATABASE: spades
+      POSTGRESQL_USER: spades
+      POSTGRESQL_PASSWORD: password
+
+  spades-cache:
+    ports:
+      - '6379:6379'
+    environment:
+      REDIS_PASSWORD: password
+
+  spades:
+    ports:
+      - '8080:8080'
+    environment:
+      POSTGRESQL_HOST: spades-db
+      POSTGRESQL_USER: spades
+      POSTGRESQL_PASSWORD: password
+      REDIS_HOST: spades-cache
+      REDIS_PASSWORD: password

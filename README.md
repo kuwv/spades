@@ -10,11 +10,11 @@ SWE-681 Final Project - Spades
 
 ## Prerequisites
 
-- libevent (MacOS `brew install libevent`)
-- Docker
-- docker-compose
-- mkcert
-- Python 3.9
+- libevent (MacOS: `brew install libevent`)
+- nss (MacOS: `brew install nss`)
+- Docker (MacOS: `brew install docker`)
+- mkcert (MacOS: `brew install mkcert`)
+- Python 3.9 (MacOS: `brew install python`)
 
 ## Install
 
@@ -22,13 +22,26 @@ SWE-681 Final Project - Spades
 pip install pipenv
 pipenv shell
 pipenv install --dev
+inv start
 ```
 
-## Manual Install
-
-...
+## Stop
 
 ```
+inv stop
+pipenv --rm
+exit
+```
+
+## Local Development
+
+```
+inv pki.setup
+inv pki.gencert \
+  --name=spades.local \
+  --name=localhost \
+  --key=./nginx/certs/spades.key \
+  --cert=./nginx/certs/spades.crt
 gunicorn app:app --bind=0.0.0.0:8080 --reload --worker-class=gevent
 ```
 
