@@ -17,7 +17,7 @@ def start(ctx, certs_path='./nginx/certs'):
     '''Start all services.'''
     certs.setup(ctx)
     filesystem.mkdir(ctx, certs_path)
-    certs.gencert(
+    certs.generate(
         ctx,
         name=['spades.local', 'localhost'],
         key=f"{certs_path}/spades.key",

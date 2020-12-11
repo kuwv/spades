@@ -67,9 +67,10 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   proxy:
-    build: nginx
+    build: nginx/
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf.d:/etc/nginx/conf.d:z
+      - ./nginx/certs:/etc/nginx/ssl:z
     depends_on:
       - spades
     networks:

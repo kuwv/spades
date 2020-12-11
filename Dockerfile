@@ -1,5 +1,9 @@
 FROM centos/python-38-centos7
 
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV FLASK_ENV production
+
 COPY ./ ./
 
 USER root

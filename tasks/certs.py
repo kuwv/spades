@@ -30,7 +30,7 @@ def setup(ctx):
 
 
 @task(pre=[setup], iterable=['name'])
-def gencert(
+def generate(
     ctx,
     name,
     key=None,

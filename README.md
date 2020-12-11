@@ -43,8 +43,8 @@ exit
 ## Local Development
 
 ```
-inv pki.setup
-inv pki.gencert \
+inv certs.setup
+inv certs.generate \
   --name=spades.local \
   --name=localhost \
   --key=./nginx/certs/spades.key \
