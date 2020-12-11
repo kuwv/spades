@@ -32,6 +32,12 @@ Setup environment with docker-compose, mkcert, and secure passwords.
 inv start
 ```
 
+Register account as 'test' and set a password.
+
+Start a game.
+
+Note: the cards aren't playable becuase the game state is waiting to get a signal form the server to set it.
+
 ## Stop
 
 ```
