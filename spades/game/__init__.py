@@ -107,6 +107,8 @@ class GameState(BidMixin, PlayerTurns):
         '''Run setup for dealer of next turn.'''
         if not self.__stack:
             self.__stack = Book()
+            db.session.add(self.__stack)
+            db.session.commit()
         if not self.current_turn:
             self.current_turn = self.dealer
         else:
@@ -240,7 +242,7 @@ class GameState(BidMixin, PlayerTurns):
                 'cannot award book during this phase'
             )
 
-    def play_trick(self, player_id: str, rank: str, suit: str) -> bool:
+    def make_play(self, player_id: str, rank: str, suit: str) -> bool:
         '''Move player card to book.'''
         if self.state == 'playing':
             if player_id == self.current_turn:
@@ -252,13 +254,15 @@ class GameState(BidMixin, PlayerTurns):
                         suit == self.__stack.suit or
                         len(player.hand.list_suit(self.__stack.suit)) <= 0
                     ):
+                        print('stack', self.__stack.id)
                         play = Play(
+                            self.__stack.id,
                             player_id,
                             inspect(player.play_card(rank, suit)).identity[0]
                         )
                         db.session.add(play)
                         db.session.commit()
-                        self.__stack.add_trick(play)
+                        self.__stack.add_play(play)
                         db.session.add(player)
                         db.session.commit()
                         self.current_turn += 1

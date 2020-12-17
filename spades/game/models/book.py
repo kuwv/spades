@@ -12,37 +12,25 @@ from spades import config, db, exceptions
 from spades.game.models.card import Card
 from spades.game.models.play import Play
 
-plays = db.Table(
-    'book_of_plays',
-    db.Column(
-        'book_id', db.Integer, db.ForeignKey('book.id'), primary_key=True
-    ),
-    db.Column('player_id', db.Integer, primary_key=True),
-    db.Column('card_id', db.Integer, primary_key=True),
-    db.ForeignKeyConstraint(
-        ['player_id', 'card_id'], ['play.player_id', 'play.card_id']
-    )
-)
-
 
 class Book(db.Model):
     '''Provide book object.'''
 
     id = db.Column(db.Integer, primary_key=True)
     # id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+
     # TODO stack should link current book to game
     # stack = db.relationship('GameState', uselist=False, backref='Book')
     plays = db.relationship(
         'Play',
-        secondary=plays,
+        uselist=True,
         lazy='subquery',
-        backref=db.backref('book_of_plays', lazy=True)
+        backref='Book',
     )
 
     def __init__(self) -> None:
         '''Initialize book.'''
         self.card_max = config.player_max
-        self.lead_player = None
 
     def __repr__(self) -> str:
         '''Return string representation of book.'''
@@ -60,30 +48,41 @@ class Book(db.Model):
         return True if card in self.plays else False
 
     @property
-    def winner(self) -> Optional[str]:
-        '''Get winner of book.'''
-        # TODO: refactor to get winner from stack
-        if not self.trump:
-            return None
-        else:
-            return self.trump
-        return self.lead_player
-
-    # TODO: check if trump has ben played
-
-    @property
-    def trump(self) -> Optional[Card]:
+    def winning_play(self) -> Optional[Card]:
         '''Get current high card.'''
         # TODO: rename highcard
         if self.plays == []:
             return None
-        trump = None
-        for card in self.plays:
-            if not trump:
-                trump = card
-            elif card > trump:
-                trump = card
-        return trump
+        high_play = None
+        for play in self.plays:
+            if not high_play or play.card > high_play.card:
+                high_play = play
+        return high_play
+
+    @property
+    def winner(self) -> Optional[str]:
+        '''Get winner of book.'''
+        # TODO: refactor to get winner from stack
+        if self.plays == []:
+            return None
+        else:
+            return self.winning_play
+
+    @property
+    def broken(self) -> bool:
+        for play in self.plays:
+            if play.card.suit == 'S':
+                return True
+        return False
+
+    @property
+    def high_card(self) -> Optional[Card]:
+        '''Get current high card.'''
+        # TODO: rename highcard
+        if self.plays == []:
+            return None
+        else:
+            return self.winning_play.card
 
     @property
     def suit(self) -> Optional[str]:
@@ -92,7 +91,7 @@ class Book(db.Model):
             return None
         return self.plays[0].card.suit
 
-    def add_trick(self, play: Play) -> None:
+    def add_play(self, play: Play) -> None:
         '''Add card to book.'''
         # print('trick', player_id, card)
         if len(self.plays) < self.card_max:

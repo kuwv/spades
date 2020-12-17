@@ -35,7 +35,7 @@ def generate_trick(g: GameState):
     player = g.get_player(turn)
     playable = player.hand.playable(g.stack.suit)
     card = [c for c in playable][0]
-    g.play_trick(turn, card.rank, card.suit)
+    g.make_play(turn, card.rank, card.suit)
     # print(f"{player.username} hand: {player.hand}")
 
 

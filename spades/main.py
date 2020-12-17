@@ -120,7 +120,7 @@ def play() -> None:
         __game.get_player_turn(username),
         __game.current_turn
     )
-    __game.play_trick(__game.get_player_turn(username), rank, suit)
+    __game.make_play(__game.get_player_turn(username), rank, suit)
     sse.publish(card_played, type='play-card')
 
 

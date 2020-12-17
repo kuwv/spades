@@ -10,7 +10,7 @@ from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from flask_sse import sse
 
-from spades import config
+# from spades import config
 
 
 db = SQLAlchemy()
