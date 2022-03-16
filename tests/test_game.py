@@ -29,7 +29,7 @@ def generate_bid(g: GameState):
     assert player.bid == bid
 
 
-def generate_trick(g: GameState):
+def generate_book(g: GameState):
     turn = g.current_turn
     # print('turn:', turn)
     player = g.get_player(turn)
@@ -76,19 +76,19 @@ def test_game_states(app) -> None:
             game.start_turn()
             assert game.state == 'playing'
 
-            # check that all tricks have been accounted for
+            # check that all books have been accounted for
             game.end_turn()
             assert game.state != 'cleanup'
 
             # TODO: switch to turn iterator
             for x in range(0, player_count):
-                generate_trick(game)
+                generate_book(game)
 
                 if x == player_count and len(
                     game.get_player(game.current_turn).hand
                 ) > 0:
                     with pytest.raises(exceptions.IllegalTurnException):
-                        generate_trick(game)
+                        generate_book(game)
 
             # end turn
             game.end_turn()

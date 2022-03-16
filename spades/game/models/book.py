@@ -25,7 +25,7 @@ class Book(db.Model):
         'Play',
         uselist=True,
         lazy='subquery',
-        backref='Book',
+        back_populates='book',
     )
 
     def __init__(self) -> None:

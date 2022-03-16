@@ -18,7 +18,6 @@ invoke = "*"
 mkdocs-material = "*"
 mkdocstrings = "*"
 flit = "*"
-ansible = "*"
 docker-compose = "*"
 pytest-flask = "*"
 autopep8 = "*"
@@ -27,6 +26,8 @@ fakeredis = "*"
 flask-assets = "*"
 githubrelease = "*"
 pytest-postgres = "*"
+proman-versioning = "*"
+build = "*"
 
 [packages]
 flask = "*"
@@ -45,6 +46,7 @@ flask-sqlalchemy = "*"
 flask-sse = "*"
 gevent = "*"
 cerberus = "*"
+ansible = "*"
 
 [pipenv]
 allow_prereleases = true

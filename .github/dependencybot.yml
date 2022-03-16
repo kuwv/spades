@@ -1,0 +1,18 @@
+---
+version: 2
+updates:
+  - package-ecosystem: pipenv
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - pipenv dependencies
+      - triage-board
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - docker dependencies
+      - triage-board

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 '''Provide webapp start.'''
 
 from spades import create_app

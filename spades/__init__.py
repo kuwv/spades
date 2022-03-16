@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # copyright: (c) 2020 by Jesse Johnson.
 # license: Apache 2.0, see LICENSE for more details.
-'''Implement spaces package.'''
+"""Provide spades webapp package metadata."""
 
 from flask import Flask
 # from flask_cors import CORS
@@ -12,6 +12,13 @@ from flask_sse import sse
 
 # from spades import config
 
+__author__ = 'Jesse P. Johnson'
+__author_email__ = 'jpj6652@gmail.com'
+__title__ = 'spades'
+__description__ = 'SWE-681 Final Project - Spades'
+__version__ = '0.1.0'
+__license__ = 'Apache-2.0'
+__copyright__ = 'Copyright 2020 Jesse Johnson.'
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -19,6 +26,7 @@ session = Session()
 
 
 def create_app() -> Flask:
+    """Create application instance."""
     app = Flask(
         __name__,
         instance_relative_config=False,
