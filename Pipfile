@@ -28,6 +28,7 @@ githubrelease = "*"
 pytest-postgres = "*"
 proman-versioning = "*"
 build = "*"
+proman-workflows = "*"
 
 [packages]
 flask = "*"
@@ -46,6 +47,7 @@ flask-sqlalchemy = "*"
 flask-sse = "*"
 gevent = "*"
 ansible = "*"
+proman-workflows = "*"
 
 [pipenv]
 allow_prereleases = true
