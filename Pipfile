@@ -45,7 +45,6 @@ psycopg2-binary = "*"
 flask-sqlalchemy = "*"
 flask-sse = "*"
 gevent = "*"
-cerberus = "*"
 ansible = "*"
 
 [pipenv]

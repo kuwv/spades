@@ -1,0 +1,42 @@
+---
+name: Python package
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Set up Python ${{ matrix.python-version }}"
+        uses: actions/setup-python@v2
+        with:
+          python-version: "${{ matrix.python-version }}"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install
+      - name: Lint
+        run: |
+          poetry run workflow-tools style.sort-headers.run --check
+          poetry run workflow-tools style.format.run --check
+          poetry run workflow-tools sca.lint.run
+          poetry run workflow-tools sca.type-checking.run
+      - name: Perform tests
+        run: poetry run workflow-tools qa.unit-test.run
+      - name: Perform security checks
+        run: |
+          poetry run workflow-tools sec.sast.run
+          poetry run workflow-tools sec.dependency-scan.run
+      - name: Lint documentation
+        run: |
+          poetry run workflow-tools docs.style
+          poetry run workflow-tools docs.coverage
+      - name: Perform documentation build
+        run: poetry run workflow-tools docs.site.build
